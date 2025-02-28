@@ -3,6 +3,12 @@
   "module": "src/pair.ts",
   "type": "module",
   "private": true,
+  "version": "0.0.1",
+  "description": "Pair AI is a CLI tool that helps you in your routine tasks",
+  "main": "dist/pair",
+  "repository": "https://github.com/danprates/pair-ai",
+  "author": "Daniel Prates <contact@daniel-prates.dev>",
+  "license": "MIT",
   "scripts": {
     "dev": "bun run --watch src/pair.ts",
     "compile": "bun build --compile --sourcemap ./src/pair.ts --outfile ./dist/pair",
