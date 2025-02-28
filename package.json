@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "bun run --watch src/pair.ts",
-    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/pair.ts --outfile ./dist/pair"
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/pair.ts --outfile ./dist/pair",
+    "test": "bun test",
+    "test:watch": "bun test --watch"
   },
   "devDependencies": {
     "@types/bun": "latest"
