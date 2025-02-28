@@ -1,3 +1,5 @@
+import { Prompt } from "../domain/prompt";
+
 /**
  * This class is responsible for committing changes using the Conventional Commits standard
  */
@@ -14,5 +16,8 @@ export class CommitAction {
       this.output("There are no changes to commit.");
       return;
     }
+
+    const prompt = await Prompt.from("commit.prompt.xml");
+    prompt.replace("content", diff);
   }
 }

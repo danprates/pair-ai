@@ -16,6 +16,13 @@ describe("Prompt", () => {
     it("should throw error when file is not found", () => {
       expect(Prompt.from("unknown.xml")).rejects.toThrow();
     });
+
+    it("should return a prompt object", async () => {
+      const prompt = await Prompt.from("test.xml");
+      expect(prompt.content).toBe(
+        "<prompt><name>Hello {{  name}}!</name></prompt>"
+      );
+    });
   });
 
   describe("replace", () => {
