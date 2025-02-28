@@ -5,3 +5,7 @@ export interface GetDiff {
 export interface Log {
   log(message: string): void;
 }
+
+export interface Ask {
+  ask(prompt: string): Promise<string>;
+}

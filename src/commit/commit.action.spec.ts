@@ -9,7 +9,10 @@ describe("CommitAction", () => {
     const console = {
       log: mock<(message: string) => void>(() => {}),
     };
-    const commit = new CommitAction(git, console);
+    const ai = {
+      ask: mock<(prompt: string) => Promise<string>>(() => Promise.resolve("")),
+    };
+    const commit = new CommitAction(git, console, ai);
     expect(commit.run()).resolves.toBeUndefined();
     expect(console.log).toHaveBeenCalledWith("There are no changes to commit.");
     expect(git.getDiff).toHaveBeenCalled();
