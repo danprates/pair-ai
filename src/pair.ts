@@ -1,3 +1,4 @@
+import { CodeReview } from "./code-review/code-review.action";
 import { CommitAction } from "./commit/commit.action";
 import { Console } from "./domain/console";
 import { Git } from "./domain/git";
@@ -13,6 +14,10 @@ const pair = ([action, ...args]: string[]): void => {
   switch (action) {
     case "commit":
       new CommitAction(git, console, openRouter).run();
+      break;
+
+    case "code-review":
+      new CodeReview().run(...args);
       break;
 
     default:
