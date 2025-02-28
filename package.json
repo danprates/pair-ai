@@ -1,8 +1,12 @@
 {
   "name": "pair-ai",
-  "module": "index.ts",
+  "module": "src/pair.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "dev": "bun run --watch src/pair.ts",
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/pair.ts --outfile ./dist/pair"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
