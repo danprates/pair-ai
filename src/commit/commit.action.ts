@@ -1,20 +1,17 @@
 import { Prompt } from "../domain/prompt";
-import type { GetDiff } from "../domain/types";
+import type { GetDiff, Log } from "../domain/types";
 
 /**
  * This class is responsible for committing changes using the Conventional Commits standard
  */
 export class CommitAction {
-  constructor(
-    private readonly git: GetDiff,
-    private readonly output: (message: string) => void
-  ) {}
+  constructor(private readonly git: GetDiff, private readonly console: Log) {}
 
   async run(): Promise<void> {
     const diff = await this.git.getDiff();
 
     if (diff.length === 0) {
-      this.output("There are no changes to commit.");
+      this.console.log("There are no changes to commit.");
       return;
     }
 

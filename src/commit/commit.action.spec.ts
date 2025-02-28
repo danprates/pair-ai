@@ -6,10 +6,12 @@ describe("CommitAction", () => {
     const git = {
       getDiff: mock<() => Promise<string>>(() => Promise.resolve("")),
     };
-    const output = mock<(message: string) => void>(() => {});
-    const commit = new CommitAction(git, output);
+    const console = {
+      log: mock<(message: string) => void>(() => {}),
+    };
+    const commit = new CommitAction(git, console);
     expect(commit.run()).resolves.toBeUndefined();
-    expect(output).toHaveBeenCalledWith("There are no changes to commit.");
+    expect(console.log).toHaveBeenCalledWith("There are no changes to commit.");
     expect(git.getDiff).toHaveBeenCalled();
   });
 });
