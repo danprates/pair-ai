@@ -24,5 +24,13 @@ describe("Prompt", () => {
       prompt.replace("name", "world");
       expect(prompt.content).toBe("<prompt><name>Hello world!</name></prompt>");
     });
+
+    it("should not replace the key if it is not found", async () => {
+      const prompt = await Prompt.from("test.xml");
+      prompt.replace("unknown", "world");
+      expect(prompt.content).toBe(
+        "<prompt><name>Hello {{  name}}!</name></prompt>"
+      );
+    });
   });
 });
