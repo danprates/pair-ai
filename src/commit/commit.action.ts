@@ -1,12 +1,12 @@
 import { Prompt } from "../domain/prompt";
-import type { Ask, GetDiff, Log } from "../domain/types";
+import type { Ask, CommitMessage, GetDiff, Log } from "../domain/types";
 
 /**
  * This class is responsible for committing changes using the Conventional Commits standard
  */
 export class CommitAction {
   constructor(
-    private readonly git: GetDiff,
+    private readonly git: GetDiff & CommitMessage,
     private readonly console: Log,
     private readonly ai: Ask
   ) {}
@@ -23,7 +23,8 @@ export class CommitAction {
     const prompt = await Prompt.from(file);
     prompt.replace("content", diff);
 
-    const response = await this.ai.ask(prompt.content);
-    this.console.log(response);
+    const message = await this.ai.ask(prompt.content);
+
+    await this.git.commit(message);
   }
 }

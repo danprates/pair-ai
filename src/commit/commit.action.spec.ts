@@ -5,6 +5,7 @@ describe("CommitAction", () => {
   it("should return error message when there is no diff to commit", () => {
     const git = {
       getDiff: mock<() => Promise<string>>(() => Promise.resolve("")),
+      commit: mock<(message: string) => Promise<void>>(() => Promise.resolve()),
     };
     const console = {
       log: mock<(message: string) => void>(() => {}),
