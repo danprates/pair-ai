@@ -7,4 +7,9 @@ export class Prompt {
     const content = await readFile(file, "utf-8");
     return new Prompt(content);
   }
+
+  public replace(key: string, value: string): void {
+    const regex = new RegExp(`{{\\s*${key}\\s*}}`, "g");
+    this.content = this.content.replace(regex, value);
+  }
 }
