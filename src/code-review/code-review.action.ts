@@ -1,8 +1,8 @@
 import { Prompt } from "../domain/prompt";
-import type { GetLogs } from "../domain/types";
+import type { Ask, GetLogs } from "../domain/types";
 
 export class CodeReview {
-  constructor(private readonly git: GetLogs) {}
+  constructor(private readonly git: GetLogs, private readonly ai: Ask) {}
   async run(...args: string[]): Promise<void> {
     const [branch] = args;
 
@@ -10,6 +10,8 @@ export class CodeReview {
     const file = __dirname + "/code-review.prompt.xml";
     const prompt = await Prompt.from(file);
     prompt.replace("content", logs);
-    console.log(prompt.content);
+
+    const response = await this.ai.ask(prompt.content);
+    console.log(response);
   }
 }
