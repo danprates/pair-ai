@@ -3,7 +3,7 @@
   "module": "src/pair.ts",
   "type": "module",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Pair AI is a CLI tool that helps you in your routine tasks",
   "main": "dist/pair",
   "repository": "https://github.com/danprates/pair-ai",
