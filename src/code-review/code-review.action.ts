@@ -1,8 +1,12 @@
 import { mkdir } from "node:fs/promises";
 import { Prompt } from "../domain/prompt";
-import type { Ask, GetLogs } from "../domain/types";
+import type { Ask, GetLogs, Log } from "../domain/types";
 export class CodeReview {
-  constructor(private readonly git: GetLogs, private readonly ai: Ask) {}
+  constructor(
+    private readonly git: GetLogs,
+    private readonly console: Log,
+    private readonly ai: Ask
+  ) {}
   async run(...args: string[]): Promise<void> {
     const [branch] = args;
 
@@ -15,6 +19,6 @@ export class CodeReview {
 
     await mkdir("./tmp", { recursive: true });
     await Prompt.to("./tmp/code-review.md", response);
-    console.log("Code review generated successfully!");
+    this.console.log("Code review generated successfully!");
   }
 }
