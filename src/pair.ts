@@ -3,6 +3,7 @@ import { CommitAction } from "./commit/commit.action";
 import { Console } from "./domain/console";
 import { Git } from "./domain/git";
 import { OpenRouter } from "./domain/open-router";
+import { PullRequest } from "./pull-request/pull-request.action";
 
 const pair = ([action, ...args]: string[]): void => {
   const git = new Git();
@@ -19,6 +20,10 @@ const pair = ([action, ...args]: string[]): void => {
 
     case "code-review":
       new CodeReview(git, console, openRouter).run(...args);
+      break;
+
+    case "pull-request":
+      new PullRequest(git, console, openRouter).run(...args);
       break;
 
     default:
