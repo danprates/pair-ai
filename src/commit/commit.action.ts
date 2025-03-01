@@ -19,7 +19,7 @@ export class CommitAction {
       return;
     }
 
-    const file = __dirname + "/commit.prompt.xml";
+    const file = __dirname + "/../commit/commit.prompt.xml";
     const prompt = await Prompt.from(file);
     prompt.replace("content", diff);
 
