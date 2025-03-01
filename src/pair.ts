@@ -17,7 +17,7 @@ const pair = ([action, ...args]: string[]): void => {
       break;
 
     case "code-review":
-      new CodeReview().run(...args);
+      new CodeReview(git).run(...args);
       break;
 
     default:
