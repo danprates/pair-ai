@@ -11,6 +11,7 @@ const pair = ([action, ...args]: string[]): void => {
     process.env.OPENROUTER_API_KEY || "",
     "google/gemini-2.0-flash-thinking-exp-1219:free"
   );
+
   switch (action) {
     case "commit":
       new CommitAction(git, console, openRouter).run();

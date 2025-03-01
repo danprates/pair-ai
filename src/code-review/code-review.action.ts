@@ -7,11 +7,13 @@ export class CodeReview {
     const [branch] = args;
 
     const logs = await this.git.getLogs(branch);
-    const file = __dirname + "/code-review.prompt.xml";
+    const file = __dirname + "/../code-review/code-review.prompt.xml";
     const prompt = await Prompt.from(file);
     prompt.replace("content", logs);
 
     const response = await this.ai.ask(prompt.content);
-    console.log(response);
+
+    await Prompt.to("./tmp/code-review.md", response);
+    console.log("Code review generated successfully!");
   }
 }
