@@ -1,0 +1,84 @@
+<prompt>
+  <purpose>Code review according to the diff provided using the pattern informed below.</purpose>
+
+  <instructions>
+    <instruction>Return the content in markdown</instruction>
+    <instruction>Answer only in English</instruction>
+    <instruction>Use simple, clear, objective, and concise language</instruction>
+    <instruction>Use the reference-source as the basis of what should be evaluated</instruction>
+    <instruction>Provide detailed feedback only on points that WERE NOT ACHIEVED</instruction>
+    <instruction>Suggest specific improvements when applicable</instruction>
+    <instruction>If there are no points of attention, answer only with the text "No points of attention in the code"</instruction>
+    <instruction>Use the example-response as the output format</instruction>
+  </instructions>
+
+  <reference-source>
+    <design-items>
+      <item>Do the interactions between parts of the code make sense?</item>
+      <item>Does the change integrate well into the existing system?</item>
+      <item>Is it the right time to add this functionality?</item>
+    </design-items>
+    <functionality-items>
+      <item>Does the change achieve what the developer intended?</item>
+      <item>Is this beneficial for end-users and future developers?</item>
+      <item>Are there any potential concurrency issues, such as deadlocks or race conditions?</item>
+    </functionality-items>
+    <complexity-items>
+      <item>Is the code more complex than it needs to be?</item>
+      <item>Can it be simplified to make it easier to understand and maintain?</item>
+      <item>Are there signs of over-engineering, with unnecessary features at the moment?</item>
+    </complexity-items>
+    <tests-items>
+      <item>Were adequate tests included (unit, integration, or end-to-end)?</item>
+      <item>Are the tests correct, sensible, and useful?</item>
+      <item>Do they fail when the code is incorrect and remain valid with future changes?</item>
+    </tests-items>
+    <nomenclature-items>
+      <item>Are the names of variables, functions, and classes descriptive and clearly communicate their purpose?</item>
+    </nomenclature-items>
+    <comments-items>
+      <item>Are the comments clear, necessary, and explain the "why" of decisions, not just the "what" of the code?</item>
+      <item>Are there outdated comments or TODOs that can be removed?</item>
+    </comments-items>
+    <commits-items>
+      <item>Are the commits clear and concise, with the goal of being easy to understand?</item>
+      <item>Do the commits follow conventional commits?</item>
+    </commits-items>
+  </reference-source>
+
+  <example-response>
+    There are some points of attention in the code:
+
+    **Nomenclature:**
+    Variables with generic names
+    The variables `e` and `c` are too generic and do not communicate the purpose of the code.
+    I suggest renaming `e` to `exchange` and `c` to `chart` for better clarity.
+
+    ```javascript
+    // src/index.js
+    - const e = new BinanceExchange();
+    - const c = new Chart(e);
+    + const exchange = new BinanceExchange();
+    + const chart = new Chart(exchange);
+    ```
+
+    **Functionality:**
+    The code is not working correctly.
+    There is an inversion in the assignment of `close` and `open` values in the `Candle` class constructor.
+    The value passed to `close` is being assigned to `this.open`, and vice versa.
+    This can lead to errors in the business logic that depends on these values.
+    I suggest correcting the assignment so that the values are assigned correctly:
+
+    ```javascript
+    // src/candle.js
+    - this.close = open;
+    - this.open = close;
+    + this.close = close;
+    + this.open = open;
+    ```
+
+    With these changes, the code will be clearer and easier to understand for other developers.
+  </example-response>
+
+  <diff>{{ content }}</diff>
+</prompt>
