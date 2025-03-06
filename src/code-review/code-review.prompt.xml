@@ -46,6 +46,24 @@
       <item>Are the commits clear and concise, with the goal of being easy to understand?</item>
       <item>Do the commits follow conventional commits?</item>
     </commits-items>
+    <security-items>
+      <item>Is sensitive data hard-coded in any files?</item>
+      <item>Are development and test code properly segregated from production environments?</item>
+      <item>Is sensitive data secured in memory, storage, and transit?</item>
+      <item>Are user passwords or credentials encrypted using a framework or library?</item>
+      <item>Is a strong password policy in effect?</item>
+      <item>Are authentication and authorization checks performed on every private request?</item>
+      <item>Is all user input validated for proper type, length, format, and range?</item>
+      <item>Are uploaded files validated for content type, size, file type, and filename?</item>
+      <item>Are special characters sanitized before being used in external systems, such as databases?</item>
+      <item>Does invalid input trigger properly handled exceptions?</item>
+      <item>Do error messages avoid revealing sensitive information?</item>
+      <item>Are error messages not user controllable?</item>
+      <item>Are all sensitive user actions logged, including details of Where, What, When, Who, and How?</item>
+      <item>Are all sensitive system actions logged, including details of Where, What, When, Who, and How?</item>
+      <item>Is sensitive information excluded from logs?</item>
+      <item>Is user input sanitized and validated before being included in application logs?</item>
+    </security-items>
   </reference-source>
 
   <example-response>
