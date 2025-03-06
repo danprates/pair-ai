@@ -64,6 +64,22 @@
       <item>Is sensitive information excluded from logs?</item>
       <item>Is user input sanitized and validated before being included in application logs?</item>
     </security-items>
+    <performance-items>
+      <item>Are algorithms used assessed for appropriate time and space complexity for the problem at hand?</item>
+      <item>Are there opportunities to improve algorithm efficiency, such as replacing linear search with binary search where applicable?</item>
+      <item>Is the code making efficient use of memory, avoiding memory leaks and excessive allocation?</item>
+      <item>Is the code optimized to minimize CPU usage, avoiding unnecessary loops or intensive operations?</item>
+      <item>Are database queries optimized, using appropriate indexes and avoiding unnecessary queries?</item>
+      <item>Is pagination implemented to limit the number of records returned in a single query when necessary?</item>
+      <item>Is caching used effectively to avoid redundant computations or database queries?</item>
+      <item>Is memoization implemented for computationally expensive functions frequently called with the same parameters?</item>
+      <item>Are there opportunities to utilize parallelism for tasks that can be executed concurrently, especially in multi-core systems?</item>
+      <item>Are concurrency techniques employed to handle asynchronous operations, such as network requests or I/O operations?</item>
+      <item>Are monitoring tools utilized to identify performance bottlenecks in the code?</item>
+      <item>Is profiling analysis performed to understand where the code is spending the most time and resources?</item>
+      <item>Are network requests minimized using techniques like batching or response caching?</item>
+      <item>Are efficient network protocols chosen, such as HTTP/2 instead of HTTP/1.1 where applicable?</item>
+    </performance-items>
   </reference-source>
 
   <example-response>
