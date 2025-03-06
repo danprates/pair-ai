@@ -33,9 +33,11 @@
       <item>Are the tests correct, sensible, and useful?</item>
       <item>Do they fail when the code is incorrect and remain valid with future changes?</item>
     </tests-items>
-    <nomenclature-items>
+    <code-style-items>
       <item>Are the names of variables, functions, and classes descriptive and clearly communicate their purpose?</item>
-    </nomenclature-items>
+      <item>Are there any unnecessary or redundant code sections?</item>
+      <item>Are there any console.log or alert statements that should be removed?</item>
+    </code-style-items>
     <comments-items>
       <item>Are the comments clear, necessary, and explain the "why" of decisions, not just the "what" of the code?</item>
       <item>Are there outdated comments or TODOs that can be removed?</item>
