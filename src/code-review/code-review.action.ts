@@ -1,7 +1,7 @@
 import { mkdir } from "node:fs/promises";
 import { Prompt } from "../domain/prompt";
-import type { Ask, GetLogs, Log } from "../domain/types";
-export class CodeReview {
+import type { Action, Ask, GetLogs, Log } from "../domain/types";
+export class CodeReview implements Action {
   constructor(
     private readonly git: GetLogs,
     private readonly console: Log,

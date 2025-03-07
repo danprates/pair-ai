@@ -15,7 +15,7 @@ const pair = async ([action, ...args]: string[]): Promise<void> => {
 
   switch (action) {
     case "commit":
-      await new CommitAction(git, console, openRouter).run();
+      await new CommitAction(git, console, openRouter).run(...args);
       break;
 
     case "code-review":

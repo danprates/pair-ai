@@ -1,8 +1,8 @@
 import { mkdir } from "node:fs/promises";
 import { Prompt } from "../domain/prompt";
-import type { Ask, GetLogs, Log } from "../domain/types";
+import type { Action, Ask, GetLogs, Log } from "../domain/types";
 
-export class PullRequest {
+export class PullRequest implements Action {
   constructor(
     private readonly git: GetLogs,
     private readonly console: Log,

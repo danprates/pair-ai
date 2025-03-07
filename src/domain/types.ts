@@ -1,3 +1,6 @@
+export interface Action {
+  run(...args: string[]): Promise<void>;
+}
 export interface GetDiff {
   getDiff(): Promise<string>;
 }

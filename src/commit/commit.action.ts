@@ -1,17 +1,17 @@
 import { Prompt } from "../domain/prompt";
-import type { Ask, CommitMessage, GetDiff, Log } from "../domain/types";
+import type { Action, Ask, CommitMessage, GetDiff, Log } from "../domain/types";
 
 /**
  * This class is responsible for committing changes using the Conventional Commits standard
  */
-export class CommitAction {
+export class CommitAction implements Action {
   constructor(
     private readonly git: GetDiff & CommitMessage,
     private readonly console: Log,
     private readonly ai: Ask
   ) {}
 
-  async run(): Promise<void> {
+  async run(...args: string[]): Promise<void> {
     const diff = await this.git.getDiff();
 
     if (diff.length === 0) {
