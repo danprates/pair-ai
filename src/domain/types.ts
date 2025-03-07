@@ -2,27 +2,22 @@ export interface Action {
   run(...args: string[]): Promise<void>;
 }
 
-export type DependencyInjection = {
-  git: GetDiff & CommitMessage & GetLogs;
-  console: Log;
-  ai: Ask;
-};
-export interface GetDiff {
+export interface Git {
   getDiff(): Promise<string>;
-}
-
-export interface CommitMessage {
   commit(message: string): Promise<void>;
-}
-
-export interface GetLogs {
   getLogs(branch: string): Promise<string>;
 }
 
-export interface Log {
+export interface Console {
   log(message: string): void;
 }
 
-export interface Ask {
+export interface ArtificialInteligence {
   ask(prompt: string): Promise<string>;
 }
+
+export type DependencyInjection = {
+  git: Git;
+  console: Console;
+  ai: ArtificialInteligence;
+};

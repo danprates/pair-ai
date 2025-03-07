@@ -1,4 +1,4 @@
-import type { Ask } from "./types";
+import type { ArtificialInteligence } from "./types";
 
 type OpenRouterResponse = {
   choices: {
@@ -12,7 +12,7 @@ type OpenRouterResponse = {
   };
 };
 
-export class OpenRouter implements Ask {
+export class OpenRouter implements ArtificialInteligence {
   private readonly url: string;
   constructor(private readonly apiKey: string, private readonly model: string) {
     this.url = "https://openrouter.ai/api/v1/chat/completions";
