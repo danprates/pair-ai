@@ -1,5 +1,17 @@
 import type { Ask } from "./types";
 
+type OpenRouterResponse = {
+  choices: {
+    message: {
+      content: string;
+    };
+  }[];
+  error?: {
+    message: string;
+    code: number;
+  };
+};
+
 export class OpenRouter implements Ask {
   private readonly url: string;
   constructor(private readonly apiKey: string, private readonly model: string) {
@@ -19,7 +31,10 @@ export class OpenRouter implements Ask {
       }),
     });
 
-    const data = await response.json();
+    const data: OpenRouterResponse = await response.json();
+    if (data.error) {
+      throw new Error(`OpenRouter API returned ${data.error.message}`);
+    }
     return data.choices[0].message.content.trim();
   }
 }

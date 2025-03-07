@@ -5,7 +5,7 @@ import { Git } from "./domain/git";
 import { OpenRouter } from "./domain/open-router";
 import { PullRequest } from "./pull-request/pull-request.action";
 
-const pair = ([action, ...args]: string[]): void => {
+const pair = async ([action, ...args]: string[]): Promise<void> => {
   const git = new Git();
   const console = new Console();
   const openRouter = new OpenRouter(
@@ -15,15 +15,15 @@ const pair = ([action, ...args]: string[]): void => {
 
   switch (action) {
     case "commit":
-      new CommitAction(git, console, openRouter).run();
+      await new CommitAction(git, console, openRouter).run();
       break;
 
     case "code-review":
-      new CodeReview(git, console, openRouter).run(...args);
+      await new CodeReview(git, console, openRouter).run(...args);
       break;
 
     case "pull-request":
-      new PullRequest(git, console, openRouter).run(...args);
+      await new PullRequest(git, console, openRouter).run(...args);
       break;
 
     default:
@@ -32,4 +32,7 @@ const pair = ([action, ...args]: string[]): void => {
   }
 };
 
-pair(process.argv.slice(2));
+pair(process.argv.slice(2)).catch((error) => {
+  console.error(error.message);
+  process.exit(1);
+});
