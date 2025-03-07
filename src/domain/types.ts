@@ -1,6 +1,12 @@
 export interface Action {
   run(...args: string[]): Promise<void>;
 }
+
+export type DependencyInjection = {
+  git: GetDiff & CommitMessage & GetLogs;
+  console: Log;
+  ai: Ask;
+};
 export interface GetDiff {
   getDiff(): Promise<string>;
 }
