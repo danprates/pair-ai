@@ -35,6 +35,6 @@ export class OpenRouter implements ArtificialInteligence {
     if (data.error) {
       throw new Error(`OpenRouter API returned ${data.error.message}`);
     }
-    return data.choices[0].message.content.trim();
+    return data.choices[0].message.content.replaceAll("```", "").trim();
   }
 }
