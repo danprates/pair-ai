@@ -44,6 +44,12 @@ After compiling, the executable will be available at `dist/pair` and automatical
 pair commit
 ```
 
+## Commands
+
+- `pair commit`: Commits changes using the Conventional Commits standard.
+- `pair code-review {branch}`: Analyzes the code in the specified branch and suggests improvements.
+- `pair pull-request {branch}`: Creates a pull request description based on the changes in the specified branch.
+
 ## Scripts
 
 - `dev`: Runs the CLI in development mode with live reloading using `bun run --watch src/pair.ts`.
