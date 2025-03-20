@@ -1,6 +1,6 @@
-import type { Console } from "./types";
+import type { Console as ConsoleInterface } from "./types";
 
-export class Console implements Console {
+export class Console implements ConsoleInterface {
   log(message: string): void {
     console.log(message);
   }

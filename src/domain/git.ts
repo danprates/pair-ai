@@ -1,7 +1,7 @@
 import { $ } from "bun";
-import type { CommitMessage, GetDiff, GetLogs } from "./types";
+import type { Git as GitInterface } from "./types";
 
-export class Git implements GetDiff, CommitMessage, GetLogs {
+export class Git implements GitInterface {
   async getDiff(): Promise<string> {
     const { stdout } = await $`git add . && git diff --cached`.quiet();
     return stdout.toString().trim();
