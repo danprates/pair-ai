@@ -1,5 +1,5 @@
 import { $ } from "bun";
-import type { Git as GitInterface } from "./types";
+import type { Git as GitInterface } from "../domain/types";
 
 export class Git implements GitInterface {
   async getDiff(): Promise<string> {

@@ -1,7 +1,7 @@
-import { Console } from "../domain/console";
-import { Git } from "../domain/git";
-import { OpenRouter } from "../domain/open-router";
 import type { DependencyInjection } from "../domain/types";
+import { Console } from "./console";
+import { Git } from "./git";
+import { OpenRouter } from "./open-router";
 
 export const dependencies: DependencyInjection = {
   git: new Git(),
