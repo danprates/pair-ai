@@ -10,6 +10,7 @@
     <instruction>Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert</instruction>
     <instruction>Never use the word "and" or "or" in the commit message</instruction>
     <instruction>Never use the scope of the commit message</instruction>
+    <instruction>Subject must not be sentence-case, start-case, pascal-case, upper-case</instruction>
   </instructions>
   <diff>{{ content }}</diff>
 </prompt>
