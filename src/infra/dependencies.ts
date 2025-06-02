@@ -8,6 +8,6 @@ export const dependencies: DependencyInjection = {
   console: new Console(),
   ai: new OpenRouter(
     process.env.OPENROUTER_API_KEY || "",
-    "google/gemini-2.0-flash-exp:free"
+    "google/gemma-3-27b-it:free"
   ),
 };
