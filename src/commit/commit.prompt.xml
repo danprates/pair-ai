@@ -11,6 +11,7 @@
     <instruction>Never use the word "and" or "or" in the commit message</instruction>
     <instruction>Never use the scope of the commit message</instruction>
     <instruction>Subject must not be sentence-case, start-case, pascal-case, upper-case</instruction>
+    <instruction>Always start the subject with a lowercase letter</instruction>
   </instructions>
   <diff>{{ content }}</diff>
 </prompt>
