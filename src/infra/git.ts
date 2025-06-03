@@ -3,7 +3,8 @@ import type { Git as GitInterface } from "../domain/types";
 
 export class Git implements GitInterface {
   async getDiff(): Promise<string> {
-    const { stdout } = await $`git add . && git diff --cached`.quiet();
+    const { stdout } =
+      await $`git add . && git diff --cached --diff-filter=ACMR`.quiet();
     return stdout.toString().trim();
   }
   async commit(message: string): Promise<void> {
@@ -11,7 +12,8 @@ export class Git implements GitInterface {
   }
 
   async getLogs(branch: string): Promise<string> {
-    const { stdout } = await $`git log --patch --graph ${branch}..`.quiet();
+    const { stdout } =
+      await $`git log --patch --graph ${branch}.. --diff-filter=ACMR`.quiet();
     return stdout.toString().trim();
   }
 }
