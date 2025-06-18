@@ -8,7 +8,8 @@ export class Git implements GitInterface {
     return stdout.toString().trim();
   }
   async commit(message: string): Promise<void> {
-    await $`git add . && git commit -m "${message}"`;
+    const sanitizedMessage = message.replaceAll("```", "").trim();
+    await $`git add . && git commit -m "${sanitizedMessage}"`;
   }
 
   async getLogs(branch: string): Promise<string> {
