@@ -6,5 +6,5 @@ import { Git } from "./git";
 export const dependencies: DependencyInjection = {
   git: new Git(),
   console: new Console(),
-  ai: new Gemini(process.env.GEMINI_API_KEY || "", "gemini-2.0-flash"),
+  ai: new Gemini(process.env.GEMINI_API_KEY || "", "gemini-2.5-flash"),
 };
