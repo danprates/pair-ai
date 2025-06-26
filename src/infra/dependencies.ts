@@ -8,6 +8,6 @@ export const dependencies: DependencyInjection = {
   console: new Console(),
   ai: new OpenRouter(
     process.env.OPENROUTER_API_KEY || "",
-    "deepseek/deepseek-r1:free"
+    "meta-llama/llama-4-maverick:free"
   ),
 };
