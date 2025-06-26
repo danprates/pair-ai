@@ -1,10 +1,13 @@
 import type { DependencyInjection } from "../domain/types";
-import { Gemini } from "./artificial-inteligence/gemini";
+import { OpenRouter } from "./artificial-inteligence/open-router";
 import { Console } from "./console";
 import { Git } from "./git";
 
 export const dependencies: DependencyInjection = {
   git: new Git(),
   console: new Console(),
-  ai: new Gemini(process.env.GEMINI_API_KEY || "", "gemini-2.5-flash"),
+  ai: new OpenRouter(
+    process.env.OPENROUTER_API_KEY || "",
+    "deepseek/deepseek-r1:free"
+  ),
 };
