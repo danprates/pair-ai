@@ -1,4 +1,4 @@
-import type { ArtificialInteligence } from "../domain/types";
+import type { ArtificialInteligence } from "../../domain/types";
 
 type OpenRouterResponse = {
   choices: {

@@ -1,6 +1,6 @@
 import type { DependencyInjection } from "../domain/types";
+import { Gemini } from "./artificial-inteligence/gemini";
 import { Console } from "./console";
-import { Gemini } from "./gemini";
 import { Git } from "./git";
 
 export const dependencies: DependencyInjection = {
