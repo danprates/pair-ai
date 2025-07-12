@@ -1,6 +1,6 @@
 import type { DependencyInjection } from "../domain/types";
 import { Gemini } from "./artificial-inteligence/gemini";
-import { Console } from "./console";
+import { log } from "./console";
 import { commit, getDiff, getLogs } from "./git";
 export const dependencies: DependencyInjection = {
   git: {
@@ -8,6 +8,6 @@ export const dependencies: DependencyInjection = {
     commit,
     getLogs,
   },
-  console: new Console(),
+  console: { log },
   ai: new Gemini(process.env.GEMINI_API_KEY || "", "gemini-2.0-flash"),
 };
