@@ -1,5 +1,3 @@
-import type { ArtificialInteligence } from "../../domain/types";
-
 type GeminiResponse = {
   candidates?: {
     content: {
@@ -12,14 +10,12 @@ type GeminiResponse = {
   };
 };
 
-export class Gemini implements ArtificialInteligence {
-  private readonly url: string;
-  constructor(private readonly apiKey: string, private readonly model: string) {
-    this.url = `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`;
-  }
+export const askGemini =
+  (apiKey: string, model: string) =>
+  async (prompt: string): Promise<string> => {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-  async ask(prompt: string): Promise<string> {
-    const response = await fetch(this.url, {
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,5 +39,4 @@ export class Gemini implements ArtificialInteligence {
         .join("")
         ?.trim() || ""
     );
-  }
-}
+  };

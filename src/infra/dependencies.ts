@@ -1,5 +1,5 @@
 import type { DependencyInjection } from "../domain/types";
-import { Gemini } from "./artificial-inteligence/gemini";
+import { askGemini } from "./artificial-inteligence/gemini";
 import { log } from "./console";
 import { commit, getDiff, getLogs } from "./git";
 export const dependencies: DependencyInjection = {
@@ -9,5 +9,5 @@ export const dependencies: DependencyInjection = {
     getLogs,
   },
   console: { log },
-  ai: new Gemini(process.env.GEMINI_API_KEY || "", "gemini-2.0-flash"),
+  ai: { ask: askGemini(process.env.GEMINI_API_KEY || "", "gemini-2.0-flash") },
 };
