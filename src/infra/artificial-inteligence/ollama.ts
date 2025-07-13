@@ -1,5 +1,3 @@
-import type { ArtificialInteligence } from "../../domain/types";
-
 type OllamaResponse = {
   message: {
     content: string;
@@ -7,20 +5,17 @@ type OllamaResponse = {
   error?: string;
 };
 
-export class Ollama implements ArtificialInteligence {
-  private readonly url: string;
-  constructor(private readonly model: string) {
-    this.url = "http://localhost:11434/api/chat";
-  }
-
-  async ask(prompt: string): Promise<string> {
-    const response = await fetch(this.url, {
+export const useOllama =
+  (model: string) =>
+  async (prompt: string): Promise<string> => {
+    const url = "http://localhost:11434/api/chat";
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: this.model,
+        model: model,
         messages: [{ role: "user", content: prompt }],
         stream: false,
       }),
@@ -31,5 +26,4 @@ export class Ollama implements ArtificialInteligence {
       throw new Error(`Ollama API returned ${data.error}`);
     }
     return data.message.content.trim();
-  }
-}
+  };
