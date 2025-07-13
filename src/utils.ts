@@ -1,5 +1,27 @@
 import { $ } from "bun";
 
+export const readFile = async (file: string): Promise<string> => {
+  return await Bun.file(file).text();
+};
+
+export const saveFile = async (
+  file: string,
+  content: string
+): Promise<void> => {
+  await Bun.write(file, content);
+};
+
+export const replaceKey = (
+  content: string,
+  key: string,
+  value: string
+): string => {
+  const regex = new RegExp(`{{\\s*${key}\\s*}}`, "g");
+  return content.replace(regex, value);
+};
+
+export const log = (message: string): void => console.log(message);
+
 export const getDiff = async (): Promise<string> => {
   const { stdout } =
     await $`git add . && git diff --cached --diff-filter=ACMR`.quiet();

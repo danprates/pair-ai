@@ -1,6 +1,6 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
 import { rm, writeFile } from "fs/promises";
-import { readFile, replaceKey } from "./file";
+import { readFile, replaceKey } from "./utils";
 
 describe("File functions", () => {
   beforeEach(async () => {

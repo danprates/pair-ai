@@ -1,5 +1,5 @@
-import { readFile, replaceKey } from "../domain/file";
-import type { DependencyInjection, UseAction } from "../domain/types";
+import type { DependencyInjection, UseAction } from "../types";
+import { readFile, replaceKey } from "../utils";
 
 export const useCommit: UseAction =
   (di: DependencyInjection) =>

@@ -1,8 +1,6 @@
 import { mkdir } from "node:fs/promises";
-import { readFile, replaceKey, saveFile } from "../domain/file";
-import type { DependencyInjection, UseAction } from "../domain/types";
-import { log } from "../infra/console";
-import { getLogs } from "../infra/git";
+import type { DependencyInjection, UseAction } from "../types";
+import { getLogs, log, readFile, replaceKey, saveFile } from "../utils";
 
 export const usePullRequest: UseAction =
   (di: DependencyInjection) =>

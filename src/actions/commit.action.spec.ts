@@ -1,5 +1,5 @@
 import { describe, expect, it, mock } from "bun:test";
-import type { DependencyInjection } from "../domain/types";
+import type { DependencyInjection } from "../types";
 import { useCommit } from "./commit.action";
 
 describe("CommitAction", () => {

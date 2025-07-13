@@ -1,7 +1,7 @@
-import type { DependencyInjection } from "../domain/types";
 import { askGemini } from "./artificial-inteligence/gemini";
-import { log } from "./console";
-import { commit, getDiff, getLogs } from "./git";
+import type { DependencyInjection } from "./types";
+import { commit, getDiff, getLogs, log } from "./utils";
+
 export const dependencies: DependencyInjection = {
   git: {
     getDiff,
