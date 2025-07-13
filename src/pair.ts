@@ -1,7 +1,7 @@
-import { useCodeReview } from "./code-review/code-review.action";
-import { useCommit } from "./commit/commit.action";
+import { useCodeReview } from "./actions/code-review.action";
+import { useCommit } from "./actions/commit.action";
+import { usePullRequest } from "./actions/pull-request.action";
 import { dependencies } from "./infra/dependencies";
-import { usePullRequest } from "./pull-request/pull-request.action";
 
 const pair = async ([action, ...args]: string[]): Promise<void> => {
   switch (action) {
