@@ -1,22 +1,20 @@
 import { mkdir } from "node:fs/promises";
 import { Prompt } from "../domain/prompt";
-import type { Action, DependencyInjection } from "../domain/types";
+import type { DependencyInjection, UseAction } from "../domain/types";
 
-export class PullRequest implements Action {
-  constructor(private readonly di: DependencyInjection) {}
-
-  async run(...args: string[]): Promise<void> {
+export const usePullRequest: UseAction =
+  (di: DependencyInjection) =>
+  async (...args: string[]) => {
     const [branch] = args;
 
-    const logs = await this.di.git.getLogs(branch);
+    const logs = await di.git.getLogs(branch);
     const file = __dirname + "/../pull-request/pull-request.prompt.xml";
     const prompt = await Prompt.from(file);
     prompt.replace("content", logs);
 
-    const response = await this.di.ai.ask(prompt.content);
+    const response = await di.ai.ask(prompt.content);
 
     await mkdir("./tmp", { recursive: true });
     await Prompt.to("./tmp/pull-request.md", response);
-    this.di.console.log("Pull request generated successfully!");
-  }
-}
+    di.console.log("Pull request generated successfully!");
+  };

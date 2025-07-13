@@ -1,7 +1,7 @@
 import { useCodeReview } from "./code-review/code-review.action";
 import { useCommit } from "./commit/commit.action";
 import { dependencies } from "./infra/dependencies";
-import { PullRequest } from "./pull-request/pull-request.action";
+import { usePullRequest } from "./pull-request/pull-request.action";
 
 const pair = async ([action, ...args]: string[]): Promise<void> => {
   switch (action) {
@@ -14,7 +14,7 @@ const pair = async ([action, ...args]: string[]): Promise<void> => {
       break;
 
     case "pull-request":
-      await new PullRequest(dependencies).run(...args);
+      await usePullRequest(dependencies)(...args);
       break;
 
     default:
