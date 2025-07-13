@@ -1,13 +1,12 @@
-import type { DependencyInjection, UseAction } from "../types";
-import { readFile, replaceKey } from "../utils";
+import type { Dependencies, UseAction } from "../types";
 
 export const useCommit: UseAction =
-  (di: DependencyInjection) =>
+  ({ getDiff, log, ask, readFile, replaceKey, commit }: Dependencies) =>
   async (...args: string[]) => {
-    const diff = await di.git.getDiff();
+    const diff = await getDiff();
 
     if (diff.length === 0) {
-      di.console.log("There are no changes to commit.");
+      log("There are no changes to commit.");
       return;
     }
 
@@ -15,7 +14,7 @@ export const useCommit: UseAction =
     const file = await readFile(path);
     const prompt = replaceKey(file, "content", diff);
 
-    const message = await di.ai.ask(prompt);
+    const message = await ask(prompt);
 
-    await di.git.commit(message);
+    await commit(message);
   };

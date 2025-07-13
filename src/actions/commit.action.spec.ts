@@ -1,26 +1,33 @@
 import { describe, expect, it, mock } from "bun:test";
-import type { DependencyInjection } from "../types";
+import type { UseDependencies } from "../types";
 import { useCommit } from "./commit.action";
 
 describe("CommitAction", () => {
   it("should return error message when there is no diff to commit", () => {
-    const git = {
+    const useDependencies: UseDependencies = () => ({
+      readFile: mock<(file: string) => Promise<string>>(() =>
+        Promise.resolve("")
+      ),
+      saveFile: mock<(file: string, content: string) => Promise<void>>(() =>
+        Promise.resolve()
+      ),
+      replaceKey: mock<(content: string, key: string, value: string) => string>(
+        (content, key, value) => content.replace(`{{ ${key} }}`, value)
+      ),
+      log: mock<(message: string) => void>(() => {}),
       getDiff: mock<() => Promise<string>>(() => Promise.resolve("")),
       commit: mock<(message: string) => Promise<void>>(() => Promise.resolve()),
       getLogs: mock<(branch: string) => Promise<string>>(() =>
         Promise.resolve("")
       ),
-    };
-    const console = {
-      log: mock<(message: string) => void>(() => {}),
-    };
-    const ai = {
       ask: mock<(prompt: string) => Promise<string>>(() => Promise.resolve("")),
-    };
-    const di: DependencyInjection = { git, console, ai };
-    const commit = useCommit(di);
+    });
+    const dependencies = useDependencies();
+    const commit = useCommit(dependencies);
     expect(commit()).resolves.toBeUndefined();
-    expect(console.log).toHaveBeenCalledWith("There are no changes to commit.");
-    expect(git.getDiff).toHaveBeenCalled();
+    expect(dependencies.log).toHaveBeenCalledWith(
+      "There are no changes to commit."
+    );
+    expect(dependencies.getDiff).toHaveBeenCalled();
   });
 });

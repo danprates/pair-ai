@@ -2,26 +2,19 @@ export interface Action {
   run(...args: string[]): Promise<void>;
 }
 
-export interface Git {
-  getDiff(): Promise<string>;
-  commit(message: string): Promise<void>;
-  getLogs(branch: string): Promise<string>;
-}
+export type UseAction = (
+  dependencies: Dependencies
+) => (...args: string[]) => Promise<void>;
 
-export interface Console {
-  log(message: string): void;
-}
-
-export interface ArtificialInteligence {
-  ask(prompt: string): Promise<string>;
-}
-
-export type DependencyInjection = {
-  git: Git;
-  console: Console;
-  ai: ArtificialInteligence;
+export type Dependencies = {
+  readFile: (file: string) => Promise<string>;
+  saveFile: (file: string, content: string) => Promise<void>;
+  replaceKey: (content: string, key: string, value: string) => string;
+  log: (message: string) => void;
+  getDiff: () => Promise<string>;
+  commit: (message: string) => Promise<void>;
+  getLogs: (branch: string) => Promise<string>;
+  ask: (prompt: string) => Promise<string>;
 };
 
-export type UseAction = (
-  di: DependencyInjection
-) => (...args: string[]) => Promise<void>;
+export type UseDependencies = () => Dependencies;

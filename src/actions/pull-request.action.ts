@@ -1,9 +1,8 @@
 import { mkdir } from "node:fs/promises";
-import type { DependencyInjection, UseAction } from "../types";
-import { getLogs, log, readFile, replaceKey, saveFile } from "../utils";
+import type { Dependencies, UseAction } from "../types";
 
 export const usePullRequest: UseAction =
-  (di: DependencyInjection) =>
+  ({ getLogs, readFile, replaceKey, ask, saveFile, log }: Dependencies) =>
   async (...args: string[]) => {
     const [branch] = args;
 
@@ -12,7 +11,7 @@ export const usePullRequest: UseAction =
     const file = await readFile(path);
     const prompt = replaceKey(file, "content", logs);
 
-    const response = await di.ai.ask(prompt);
+    const response = await ask(prompt);
 
     await mkdir("./tmp", { recursive: true });
     await saveFile("./tmp/pull-request.md", response);

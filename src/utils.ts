@@ -1,4 +1,6 @@
 import { $ } from "bun";
+import { useGemini } from "./artificial-inteligence/gemini";
+import type { UseDependencies } from "./types";
 
 export const readFile = async (file: string): Promise<string> => {
   return await Bun.file(file).text();
@@ -38,3 +40,14 @@ export const getLogs = async (branch: string): Promise<string> => {
     await $`git log --patch --graph ${branch}.. --diff-filter=ACMR`.quiet();
   return stdout.toString().trim();
 };
+
+export const useDependencies: UseDependencies = () => ({
+  readFile,
+  saveFile,
+  replaceKey,
+  log,
+  getDiff,
+  commit,
+  getLogs,
+  ask: useGemini(process.env.GEMINI_API_KEY || "", "gemini-2.0-flash"),
+});

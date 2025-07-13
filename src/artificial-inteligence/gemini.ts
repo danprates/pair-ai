@@ -10,7 +10,7 @@ type GeminiResponse = {
   };
 };
 
-export const askGemini =
+export const useGemini =
   (apiKey: string, model: string) =>
   async (prompt: string): Promise<string> => {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
