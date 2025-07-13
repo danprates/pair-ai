@@ -1,4 +1,4 @@
-import { CodeReview } from "./code-review/code-review.action";
+import { useCodeReview } from "./code-review/code-review.action";
 import { useCommit } from "./commit/commit.action";
 import { dependencies } from "./infra/dependencies";
 import { PullRequest } from "./pull-request/pull-request.action";
@@ -10,7 +10,7 @@ const pair = async ([action, ...args]: string[]): Promise<void> => {
       break;
 
     case "code-review":
-      await new CodeReview(dependencies).run(...args);
+      await useCodeReview(dependencies)(...args);
       break;
 
     case "pull-request":
