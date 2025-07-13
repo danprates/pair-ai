@@ -1,12 +1,12 @@
 import { CodeReview } from "./code-review/code-review.action";
-import { CommitAction } from "./commit/commit.action";
+import { useCommit } from "./commit/commit.action";
 import { dependencies } from "./infra/dependencies";
 import { PullRequest } from "./pull-request/pull-request.action";
 
 const pair = async ([action, ...args]: string[]): Promise<void> => {
   switch (action) {
     case "commit":
-      await new CommitAction(dependencies).run(...args);
+      await useCommit(dependencies)(...args);
       break;
 
     case "code-review":

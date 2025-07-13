@@ -21,3 +21,7 @@ export type DependencyInjection = {
   console: Console;
   ai: ArtificialInteligence;
 };
+
+export type UseAction = (
+  di: DependencyInjection
+) => (...args: string[]) => Promise<void>;
