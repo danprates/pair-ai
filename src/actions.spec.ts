@@ -1,6 +1,6 @@
 import { describe, expect, it, mock } from "bun:test";
-import type { UseDependencies } from "../types";
-import { useCommit } from "./commit.action";
+import { useCommit } from "./actions";
+import type { UseDependencies } from "./types";
 
 describe("CommitAction", () => {
   it("should return error message when there is no diff to commit", () => {

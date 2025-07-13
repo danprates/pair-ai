@@ -1,6 +1,4 @@
-import { useCodeReview } from "./actions/code-review.action";
-import { useCommit } from "./actions/commit.action";
-import { usePullRequest } from "./actions/pull-request.action";
+import { useCodeReview, useCommit, usePullRequest } from "./actions";
 import { useDependencies } from "./utils";
 
 const pair = async ([action, ...args]: string[]): Promise<void> => {
