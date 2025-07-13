@@ -1,5 +1,3 @@
-import type { ArtificialInteligence } from "../../domain/types";
-
 type OpenRouterResponse = {
   choices: {
     message: {
@@ -12,20 +10,18 @@ type OpenRouterResponse = {
   };
 };
 
-export class OpenRouter implements ArtificialInteligence {
-  private readonly url: string;
-  constructor(private readonly apiKey: string, private readonly model: string) {
-    this.url = "https://openrouter.ai/api/v1/chat/completions";
-  }
-  async ask(prompt: string): Promise<string> {
-    const response = await fetch(this.url, {
+export const useOpenRouter =
+  (apiKey: string, model: string) =>
+  async (prompt: string): Promise<string> => {
+    const url = "https://openrouter.ai/api/v1/chat/completions";
+    const response = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${this.apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: this.model,
+        model: model,
         messages: [{ role: "user", content: [{ type: "text", text: prompt }] }],
         temperature: 0.1,
       }),
@@ -36,5 +32,4 @@ export class OpenRouter implements ArtificialInteligence {
       throw new Error(`OpenRouter API returned ${data.error.message}`);
     }
     return data.choices[0].message.content.replaceAll("```", "").trim();
-  }
-}
+  };
