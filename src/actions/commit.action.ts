@@ -1,4 +1,4 @@
-import { Prompt } from "../domain/prompt";
+import { readFile, replaceKey } from "../domain/file";
 import type { DependencyInjection, UseAction } from "../domain/types";
 
 export const useCommit: UseAction =
@@ -11,11 +11,11 @@ export const useCommit: UseAction =
       return;
     }
 
-    const file = __dirname + "/../commit/commit.prompt.xml";
-    const prompt = await Prompt.from(file);
-    prompt.replace("content", diff);
+    const path = __dirname + "/../commit/commit.prompt.xml";
+    const file = await readFile(path);
+    const prompt = replaceKey(file, "content", diff);
 
-    const message = await di.ai.ask(prompt.content);
+    const message = await di.ai.ask(prompt);
 
     await di.git.commit(message);
   };
