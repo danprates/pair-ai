@@ -1,8 +1,10 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
 import { rm, writeFile } from "fs/promises";
-import { readFile, replaceKey } from "./utils";
+import { useDependencies } from "./dependencies";
 
 describe("File functions", () => {
+  const { readFile, replaceKey } = useDependencies();
+
   beforeEach(async () => {
     await writeFile(
       "test.xml",
