@@ -15,6 +15,13 @@ const replaceKey = (content: string, key: string, value: string): string => {
   return content.replace(regex, value);
 };
 
+const replaceKeys = (content: string, keys: Record<string, string>): string => {
+  return Object.entries(keys).reduce(
+    (acc, [key, value]) => replaceKey(acc, key, value),
+    content
+  );
+};
+
 const log = (message: string): void => console.log(message);
 
 const getDiff = async (): Promise<string> => {
@@ -38,6 +45,7 @@ export const useDependencies: UseDependencies = () => ({
   readFile,
   saveFile,
   replaceKey,
+  replaceKeys,
   log,
   getDiff,
   commit,

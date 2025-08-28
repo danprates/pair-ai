@@ -2,8 +2,8 @@
   <purpose>Code review according to the diff provided using the pattern informed below.</purpose>
 
   <instructions>
+    <instruction>Always answer in {{ language }}</instruction>
     <instruction>Return the content in markdown</instruction>
-    <instruction>Answer only in English</instruction>
     <instruction>Use simple, clear, objective, and concise language</instruction>
     <instruction>Use the reference-source as the basis of what should be evaluated</instruction>
     <instruction>Provide detailed feedback only on points that WERE NOT ACHIEVED</instruction>

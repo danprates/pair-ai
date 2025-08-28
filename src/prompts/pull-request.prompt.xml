@@ -4,8 +4,8 @@
   </purpose>
 
   <instructions>
+    <instruction>Always answer in {{ language }}</instruction>
     <instruction>Return the content in markdown</instruction>
-    <instruction>Answer only in English</instruction>
     <instruction>Use simple, clear, objective and concise language</instruction>
     <instruction>Summarize the content in 4 parts: title, context, changes and observations</instruction>
     <instruction>Use the template as the output format</instruction>
