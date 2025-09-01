@@ -1,5 +1,4 @@
-import type { Config } from "./env";
-import type { Dependencies, UseAction } from "./types";
+import type { Config, Dependencies, UseAction } from "./types";
 
 export const useCodeReview: UseAction =
   (

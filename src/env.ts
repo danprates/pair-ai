@@ -1,8 +1,4 @@
-export type Config = {
-  MODEL: string;
-  LANGUAGE: string;
-  COMMIT_LANGUAGE: string;
-};
+import type { Config } from "./types";
 
 const defaultConfig: Config = {
   MODEL: "gemini/gemini-2.0-flash",
