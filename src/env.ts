@@ -4,7 +4,7 @@ export type Config = {
 };
 
 const defaultConfig: Config = {
-  MODEL: "gemini-2.0-flash",
+  MODEL: "gemini/gemini-2.0-flash",
   LANGUAGE: "en",
 };
 

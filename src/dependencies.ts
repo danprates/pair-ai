@@ -1,5 +1,5 @@
 import { $ } from "bun";
-import { useGemini } from "./artificial-inteligence/gemini";
+import { useModel } from "./artificial-inteligence/model";
 import type { Config } from "./env";
 import type { UseDependencies } from "./types";
 
@@ -51,5 +51,5 @@ export const useDependencies: UseDependencies = (config: Config) => ({
   getDiff,
   commit,
   getLogs,
-  ask: useGemini(process.env.GEMINI_API_KEY || "", config.MODEL),
+  ask: useModel(config),
 });
