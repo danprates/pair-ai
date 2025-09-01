@@ -1,6 +1,6 @@
 import { useCodeReview, useCommit, usePullRequest } from "./actions";
+import { useConfig } from "./config";
 import { useDependencies } from "./dependencies";
-import { useConfig } from "./env";
 
 const pair = async ([action, ...args]: string[]): Promise<void> => {
   const config = await useConfig();
