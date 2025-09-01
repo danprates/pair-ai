@@ -8,6 +8,7 @@ export type UseAction = (
   dependencies: Dependencies
 ) => (...args: string[]) => Promise<void>;
 
+export type Ask = (prompt: string) => Promise<string>;
 export type Dependencies = {
   readFile: (file: string) => Promise<string>;
   saveFile: (file: string, content: string) => Promise<void>;
@@ -17,7 +18,7 @@ export type Dependencies = {
   getDiff: () => Promise<string>;
   commit: (message: string) => Promise<void>;
   getLogs: (branch: string) => Promise<string>;
-  ask: (prompt: string) => Promise<string>;
+  ask: Ask;
 };
 
 export type UseDependencies = (config: Config) => Dependencies;
