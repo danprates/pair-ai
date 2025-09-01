@@ -20,7 +20,7 @@ const pair = async ([action, ...args]: string[]): Promise<void> => {
       break;
 
     default:
-      console.log("Unknown action");
+      dependencies.log("Unknown action");
       break;
   }
 };
