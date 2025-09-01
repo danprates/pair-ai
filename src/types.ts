@@ -1,3 +1,5 @@
+import type { Config } from "./env";
+
 export interface Action {
   run(...args: string[]): Promise<void>;
 }
@@ -18,4 +20,4 @@ export type Dependencies = {
   ask: (prompt: string) => Promise<string>;
 };
 
-export type UseDependencies = () => Dependencies;
+export type UseDependencies = (config: Config) => Dependencies;
