@@ -9,6 +9,9 @@ const defaultConfig: Config = {
 };
 
 export const useConfig = async (): Promise<Config> => {
+  const hasConfig = await Bun.file(".pair-ai").exists();
+  if (!hasConfig) return defaultConfig;
+
   const file = await Bun.file(".pair-ai").text();
   const lines = file.split("\n");
   return lines.reduce((acc, line) => {
