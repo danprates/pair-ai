@@ -1,5 +1,6 @@
 import { $ } from "bun";
 import { useGemini } from "./artificial-inteligence/gemini";
+import type { Config } from "./env";
 import type { UseDependencies } from "./types";
 
 const readFile = async (file: string): Promise<string> => {
@@ -41,7 +42,7 @@ const getLogs = async (branch: string): Promise<string> => {
   return stdout.toString().trim();
 };
 
-export const useDependencies: UseDependencies = () => ({
+export const useDependencies: UseDependencies = (config: Config) => ({
   readFile,
   saveFile,
   replaceKey,
@@ -50,5 +51,5 @@ export const useDependencies: UseDependencies = () => ({
   getDiff,
   commit,
   getLogs,
-  ask: useGemini(process.env.GEMINI_API_KEY || "", "gemini-2.0-flash"),
+  ask: useGemini(process.env.GEMINI_API_KEY || "", config.MODEL),
 });
