@@ -1,11 +1,13 @@
 export type Config = {
   MODEL: string;
   LANGUAGE: string;
+  COMMIT_LANGUAGE: string;
 };
 
 const defaultConfig: Config = {
   MODEL: "gemini/gemini-2.0-flash",
   LANGUAGE: "en",
+  COMMIT_LANGUAGE: "en",
 };
 
 export const useConfig = async (): Promise<Config> => {
