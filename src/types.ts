@@ -1,5 +1,3 @@
-import type { Config } from "./env";
-
 export interface Action {
   run(...args: string[]): Promise<void>;
 }
@@ -10,6 +8,13 @@ export type UseAction = (
 ) => (...args: string[]) => Promise<void>;
 
 export type Ask = (prompt: string) => Promise<string>;
+
+export type Config = {
+  MODEL: string;
+  LANGUAGE: string;
+  COMMIT_LANGUAGE: string;
+};
+
 export type Dependencies = {
   readFile: (file: string) => Promise<string>;
   saveFile: (file: string, content: string) => Promise<void>;

@@ -1,7 +1,6 @@
 import { $ } from "bun";
 import { useModel } from "./artificial-inteligence/model";
-import type { Config } from "./env";
-import type { UseDependencies } from "./types";
+import type { Config, UseDependencies } from "./types";
 
 const readFile = async (file: string): Promise<string> => {
   return await Bun.file(file).text();
