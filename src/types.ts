@@ -5,7 +5,8 @@ export interface Action {
 }
 
 export type UseAction = (
-  dependencies: Dependencies
+  dependencies: Dependencies,
+  config: Config
 ) => (...args: string[]) => Promise<void>;
 
 export type Ask = (prompt: string) => Promise<string>;

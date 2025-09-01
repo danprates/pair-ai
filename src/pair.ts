@@ -8,15 +8,15 @@ const pair = async ([action, ...args]: string[]): Promise<void> => {
 
   switch (action) {
     case "commit":
-      await useCommit(dependencies)(...args);
+      await useCommit(dependencies, config)(...args);
       break;
 
     case "code-review":
-      await useCodeReview(dependencies)(...args);
+      await useCodeReview(dependencies, config)(...args);
       break;
 
     case "pull-request":
-      await usePullRequest(dependencies)(...args);
+      await usePullRequest(dependencies, config)(...args);
       break;
 
     default:
