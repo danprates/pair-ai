@@ -21,7 +21,7 @@ Generate a pull-request description from the commits on the current branch that 
 2. **Capture the diff.**
 
    ```bash
-   git log --patch --graph <branch>.. --diff-filter=ACMR
+   git log --patch --graph <branch>..
    ```
 
 3. **Save the diff for inspection.**

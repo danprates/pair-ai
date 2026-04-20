@@ -21,10 +21,8 @@ Produce a code review of everything on the current branch that is not on the bas
 2. **Capture the diff.**
 
    ```bash
-   git log --patch --graph <branch>.. --diff-filter=ACMR
+   git log --patch --graph <branch>..
    ```
-
-   This is the same command used by the pair-ai binary.
 
 3. **Save the diff for inspection.**
 
@@ -69,6 +67,7 @@ Produce a code review of everything on the current branch that is not on the bas
      - Do they follow Conventional Commits?
    - **Security**
      - Hard-coded sensitive data, weak credential handling, missing authn/authz on private requests, unvalidated user input, unsanitized special characters, error messages leaking info, sensitive data in logs, unsafe file uploads.
+     - Files that should not be committed: `.env*`, credentials, private keys (`*.pem`, `*.key`, `id_rsa`), auth tokens, cloud service account JSON, local config with secrets, build artifacts, large binaries, or anything matching common secret patterns. Flag these for immediate removal from the branch and rotation of any leaked secret.
    - **Performance**
      - Inefficient algorithms, memory leaks, wasteful CPU loops, missing indexes or pagination on queries, missing caching/memoization for expensive work, unparallelized opportunities, unoptimized network requests.
 
