@@ -1,38 +1,18 @@
-# Custom
-# Keep project skills versioned even if a global gitignore excludes .claude/
-!.claude/skills/
+# Local skill output
+tmp
 
-# dependencies (bun install)
-node_modules
-
-# output
-out
-dist
-*.tgz
-
-# code coverage
-coverage
-*.lcov
-
-# logs
+# Logs
 logs
-_.log
-report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
-# dotenv environment variable files
+# Env files
 .env
+.env.local
 .env.development.local
 .env.test.local
 .env.production.local
-.env.local
 
-# caches
-.eslintcache
-.cache
-*.tsbuildinfo
-
-# IntelliJ based IDEs
+# Editors
 .idea
 
-# Finder (MacOS) folder config
+# macOS
 .DS_Store
