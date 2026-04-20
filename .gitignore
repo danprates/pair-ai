@@ -1,4 +1,7 @@
-# dependencies (bun install)
+# Custom
+!.claude/skills/
+
+# dependencies  (bun install)
 node_modules
 
 # output
