@@ -1,0 +1,13 @@
+{
+  "name": "pair",
+  "owner": {
+    "name": "Daniel Prates"
+  },
+  "plugins": [
+    {
+      "name": "pair",
+      "source": "./plugins/pair",
+      "description": "Commit, code-review, and pull-request skills"
+    }
+  ]
+}

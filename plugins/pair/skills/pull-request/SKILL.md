@@ -38,8 +38,7 @@ Generate a pull-request description from the commits on the current branch that 
       - `.github/pull_request_template.md`
       - `.github/PULL_REQUEST_TEMPLATE.md`
       - `.github/pull_request_template/` or `.github/PULL_REQUEST_TEMPLATE/` — if it is a directory, use the first `*.md` inside (check with `Glob` pattern `.github/{pull_request_template,PULL_REQUEST_TEMPLATE}/*.md`).
-   3. `${CLAUDE_PLUGIN_ROOT}/skills/pull-request/template.md` — plugin default (when installed as plugin)
-   4. `.claude/skills/pull-request/template.md` — local skill default (when used from a project's `.claude/skills/`)
+   3. `${CLAUDE_PLUGIN_ROOT}/skills/pull-request/template.md` — plugin default
 
    Use `Read` on each candidate in order. The first existing file wins.
 

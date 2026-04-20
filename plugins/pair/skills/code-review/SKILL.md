@@ -36,8 +36,7 @@ Produce a code review of everything on the current branch that is not on the bas
 
 4. **Resolve the review template** in this order (stop at the first found):
    1. `./tmp/templates/code-review.md` — user project override
-   2. `${CLAUDE_PLUGIN_ROOT}/skills/code-review/template.md` — plugin default (when installed as plugin)
-   3. `.claude/skills/code-review/template.md` — local skill default (when used from a project's `.claude/skills/`)
+   2. `${CLAUDE_PLUGIN_ROOT}/skills/code-review/template.md` — plugin default
 
    Use `Read` on each candidate in order; if the file exists, that is the active template.
 
