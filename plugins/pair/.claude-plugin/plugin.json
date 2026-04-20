@@ -1,0 +1,8 @@
+{
+  "name": "pair",
+  "version": "1.0.0",
+  "description": "Commit, code-review, and pull-request skills",
+  "author": {
+    "name": "Daniel Prates"
+  }
+}
