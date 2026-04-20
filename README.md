@@ -1,61 +1,82 @@
-# Pair AI
+# pair
 
-Pair AI is a CLI tool that helps you in your routine tasks.
+Claude Code plugin providing three skills: `/pair:commit`, `/pair:code-review`, `/pair:pull-request`.
 
-## Dependencies
+## Skills
 
-Before running the CLI, you need to have the following dependencies installed:
+### `/pair:commit [language]`
 
-- Bun: See [bun.sh](https://bun.sh) for installation instructions.
-- Git: Normally installed by default on macOS and Linux.
-- OpenRouter API Key: You can get it [here](https://openrouter.ai/settings/keys).
+Stages every change in the working tree, captures the diff, and creates a commit with a [Conventional Commits](https://www.conventionalcommits.org/) message. The scope is extracted automatically from the current branch name when it contains a Jira (`JIRA-1234`) or Azure DevOps (`AB#1234`, `#1234`, or a bare number after the type prefix) ticket.
 
-Now just export your OpenRouter API Key as an environment variable:
-
-```bash
-echo "export OPENROUTER_API_KEY=your-api-key" >> ~/.bashrc
+```text
+/pair:commit              # default language: en
+/pair:commit pt-BR        # message in Portuguese
 ```
 
-## Installation
+Example: on branch `feat/JIRA-1234-add-login`, the resulting commit becomes `feat(JIRA-1234): add login form`.
 
-To install dependencies for `pair-ai`, run:
+The raw diff is saved to `./tmp/diff.txt` for inspection before you push.
 
-```bash
-bun install
+### `/pair:code-review [base-branch] [language]`
+
+Reviews everything on the current branch that is not on the base branch. The report is written to `./tmp/code-review.md` with each issue **numbered globally** so you can reference them in follow-up messages ("fix 2", "ignore 3").
+
+```text
+/pair:code-review                        # base: dev, language: en
+/pair:code-review main
+/pair:code-review origin/main pt-BR
 ```
 
-## Usage
+### `/pair:pull-request [base-branch] [language]`
 
-To run the CLI during development, use:
+Generates a pull-request description from the commits that diverge from the base branch. Output is saved to `./tmp/pull-request.md`.
 
-```bash
-bun run dev
+```text
+/pair:pull-request
+/pair:pull-request main pt-BR
 ```
 
-To compile the CLI into an executable:
+The template is resolved in this order:
 
-```bash
-bun run compile
+1. `./tmp/templates/pull-request.md` — project-local override
+2. `.github/pull_request_template.md` (or `PULL_REQUEST_TEMPLATE.md`, or any `*.md` inside `.github/pull_request_template/`) — repo convention
+3. The plugin's built-in template
+
+## Install
+
+Inside Claude Code:
+
+```text
+/plugin marketplace add danprates/pair-ai
+/plugin install pair@pair
 ```
 
-After compiling, the executable will be available at `dist/pair` and automatically copied to `~/.local/bin`. You should then be able to run it directly from your terminal:
+That's it — the three skills become available in any project.
 
-```bash
-pair commit
+## Customizing templates
+
+Drop a markdown file in `./tmp/templates/` of the project you're working on to override the default template for that project only:
+
+- `tmp/templates/code-review.md` — overrides the review format
+- `tmp/templates/pull-request.md` — overrides the PR description format (also beats `.github/`)
+
+The issue-numbering contract still applies to `code-review`, even with a custom template.
+
+## Updating
+
+```text
+/plugin marketplace update pair
 ```
 
-## Commands
+## Local development
 
-- `pair commit`: Commits changes using the Conventional Commits standard.
-- `pair code-review {branch}`: Analyzes the code in the specified branch and suggests improvements.
-- `pair pull-request {branch}`: Creates a pull request description based on the changes in the specified branch.
+Clone this repo and, from its root:
 
-## Scripts
+```bash
+claude --plugin-dir ./plugins/pair
+```
 
-- `dev`: Runs the CLI in development mode with live reloading using `bun run --watch src/pair.ts`.
-- `compile`: Compiles the TypeScript code into a standalone executable using `bun build`.
-- `test`: Runs tests using `bun test`.
-- `test:watch`: Runs tests in watch mode using `bun test --watch`.
+Inside the session, use `/reload-plugins` after editing any `SKILL.md` to pick up the change without restarting.
 
 ## License
 
