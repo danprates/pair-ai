@@ -1,11 +1,11 @@
 ---
-name: pair-pull-request
+name: pull-request
 description: Generate a PR description from commits between the current branch and a base branch
 disable-model-invocation: true
 allowed-tools: Bash(git log:*), Bash(git diff:*), Bash(ls:*), Bash(mkdir:*), Write, Read, Glob
 ---
 
-# pair-pull-request
+# pull-request
 
 Generate a pull-request description from the commits on the current branch that diverge from a base branch. The description is saved to `./tmp/pull-request.md`, following (in order of preference) a user override, the repo's GitHub PR template, or the skill's default template.
 
@@ -38,9 +38,10 @@ Generate a pull-request description from the commits on the current branch that 
       - `.github/pull_request_template.md`
       - `.github/PULL_REQUEST_TEMPLATE.md`
       - `.github/pull_request_template/` or `.github/PULL_REQUEST_TEMPLATE/` — if it is a directory, use the first `*.md` inside (check with `Glob` pattern `.github/{pull_request_template,PULL_REQUEST_TEMPLATE}/*.md`).
-   3. `.claude/skills/pair-pull-request/template.md` — skill default (shipped with this skill)
+   3. `${CLAUDE_PLUGIN_ROOT}/skills/pull-request/template.md` — plugin default (when installed as plugin)
+   4. `.claude/skills/pull-request/template.md` — local skill default (when used from a project's `.claude/skills/`)
 
-   Use `Read` on each candidate. The first existing file wins.
+   Use `Read` on each candidate in order. The first existing file wins.
 
 5. **Generate the PR description** following the resolved template:
    - Fill every section of the template using what the diff from step 2 actually shows. Do not invent content; if a section cannot be filled from the diff, keep the heading with a brief honest placeholder like `N/A` or a single-line summary.
