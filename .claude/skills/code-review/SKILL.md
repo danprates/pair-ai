@@ -1,11 +1,11 @@
 ---
-name: pair-code-review
+name: code-review
 description: Review the diff between current branch and a base branch, saving a numbered report
 disable-model-invocation: true
 allowed-tools: Bash(git log:*), Bash(git diff:*), Bash(mkdir:*), Write, Read
 ---
 
-# pair-code-review
+# code-review
 
 Produce a code review of everything on the current branch that is not on the base branch. The review is saved to `./tmp/code-review.md` with issues numbered globally so the user can reference them by number ("fix 2", "ignore 3").
 
@@ -36,9 +36,10 @@ Produce a code review of everything on the current branch that is not on the bas
 
 4. **Resolve the review template** in this order (stop at the first found):
    1. `./tmp/templates/code-review.md` — user project override
-   2. `.claude/skills/pair-code-review/template.md` — skill default (shipped with this skill)
+   2. `${CLAUDE_PLUGIN_ROOT}/skills/code-review/template.md` — plugin default (when installed as plugin)
+   3. `.claude/skills/code-review/template.md` — local skill default (when used from a project's `.claude/skills/`)
 
-   Use `Read` on each candidate; if the file exists, that is the active template.
+   Use `Read` on each candidate in order; if the file exists, that is the active template.
 
 5. **Analyze the diff** using the following reference criteria (the nine categories from the original pair-ai prompt). Provide feedback **only** on points that were NOT achieved — do not praise what works.
    - **Design**

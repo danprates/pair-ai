@@ -1,11 +1,11 @@
 ---
-name: pair-commit
+name: commit
 description: Generate a conventional-commit message from staged changes and commit
 disable-model-invocation: true
 allowed-tools: Bash(git add:*), Bash(git diff:*), Bash(git status:*), Bash(git commit:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(mkdir:*), Write
 ---
 
-# pair-commit
+# commit
 
 Generate a Conventional Commits message from the currently staged changes (auto-staging working tree first) and create the commit. Scope is extracted from the current branch name (Jira / Azure DevOps ticket id).
 
