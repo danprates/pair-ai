@@ -1,13 +1,14 @@
 # Pair AI
 
-> Three Claude Code skills that handle the git chores you do after every coding session.
+> Four Claude Code skills that handle the git chores you do after every coding session.
 
-If you use [Claude Code](https://claude.ai/code), `pair` gives you three slash commands that cover the most repetitive parts of the git workflow: writing a commit message, reviewing your changes before pushing, and drafting a pull-request description. Each one reads your actual diff — no copy-pasting, no context switching.
+If you use [Claude Code](https://claude.ai/code), `pair` gives you four slash commands that cover the most repetitive parts of the git workflow: writing a commit message, reviewing your changes before pushing, drafting a pull-request description, and generating a handoff document for other teams. Each one reads your actual diff — no copy-pasting, no context switching.
 
 ```text
 /pair:commit
 /pair:code-review
 /pair:pull-request
+/pair:handoff
 ```
 
 ---
@@ -19,6 +20,7 @@ Writing a good commit message, doing an honest self-review, and drafting a PR de
 - **Commit** — stages everything, reads the diff, and produces a [Conventional Commits](https://www.conventionalcommits.org/) message. If your branch name contains a Jira or Azure DevOps ticket, the scope is extracted automatically.
 - **Code review** — compares the current branch against a base branch and produces a numbered issue list. You can then say "fix 2, ignore 3" in follow-up messages.
 - **Pull request** — generates a PR description from your commit history. Picks up your repo's existing PR template if one exists.
+- **Handoff** — generates a cross-area knowledge transfer document for frontend developers and QA: what was done, which scenarios are covered, how to integrate, and how to implement or validate.
 
 All three skills write their output to `./tmp/` so you can inspect, edit, and version it before pushing.
 
@@ -78,6 +80,22 @@ Output is saved to `./tmp/pull-request.md`.
 2. `.github/pull_request_template.md` (or `PULL_REQUEST_TEMPLATE.md`, or any `*.md` inside `.github/pull_request_template/`) — your repo's convention
 3. The plugin's built-in template
 
+### `/pair:handoff [base-branch] [language]`
+
+Generates a cross-area handoff document from the commits that diverge from the base branch. Written for **frontend developers and QA** — not the team that wrote the code. Covers what was done, which scenarios are handled, how to integrate, and how to implement or validate.
+
+```text
+/pair:handoff
+/pair:handoff main pt-BR
+```
+
+Output is saved to `./tmp/handoff.md`.
+
+**Template resolution order** (first match wins):
+
+1. `./tmp/templates/handoff.md` — your project-local override
+2. The plugin's built-in template
+
 ---
 
 ## Install
@@ -101,6 +119,7 @@ Drop a Markdown file in `./tmp/templates/` of the project you're working on to o
 | ------------------------------- | -------------------------------------------- |
 | `tmp/templates/code-review.md`  | Review format                                |
 | `tmp/templates/pull-request.md` | PR description format (beats `.github/` too) |
+| `tmp/templates/handoff.md`      | Handoff document format                      |
 
 The global issue-numbering contract in `code-review` still applies even with a custom template — issues must be numbered sequentially across all categories so follow-up references stay unambiguous.
 
