@@ -19,27 +19,21 @@ Produce a code review of everything on the current branch that is not on the bas
 
 1. **Resolve arguments.** `branch = $1 || dev`, `language = $2 || en`.
 
-2. **Capture the diff.**
+2. **Capture and save the diff.**
 
    ```bash
-   git log --patch --graph <branch>..
+   mkdir -p ./tmp && git log --patch --graph <branch>.. > ./tmp/diff.txt
    ```
 
-3. **Save the diff for inspection.**
+   Then read `./tmp/diff.txt` to analyze the changes.
 
-   ```bash
-   mkdir -p ./tmp
-   ```
-
-   Write the output of step 2 to `./tmp/diff.txt`.
-
-4. **Resolve the review template** in this order (stop at the first found):
+3. **Resolve the review template** in this order (stop at the first found):
    1. `./tmp/templates/code-review.md` — user project override
    2. `${CLAUDE_PLUGIN_ROOT}/skills/code-review/template.md` — plugin default
 
    Use `Read` on each candidate in order; if the file exists, that is the active template.
 
-5. **Analyze the diff** using the following reference criteria (the nine categories from the original pair-ai prompt). Provide feedback **only** on points that were NOT achieved — do not praise what works.
+4. **Analyze the diff** using the following reference criteria (the nine categories from the original pair-ai prompt). Provide feedback **only** on points that were NOT achieved — do not praise what works.
    - **Design**
      - Do the interactions between parts of the code make sense?
      - Does the change integrate well into the existing system?
@@ -72,20 +66,20 @@ Produce a code review of everything on the current branch that is not on the bas
    - **Performance**
      - Inefficient algorithms, memory leaks, wasteful CPU loops, missing indexes or pagination on queries, missing caching/memoization for expensive work, unparallelized opportunities, unoptimized network requests.
 
-6. **If there are NO issues**, write exactly this line (translated to `$2` language) as the entire review body:
+5. **If there are NO issues**, write exactly this line (translated to `$2` language) as the entire review body:
 
    > No points of attention in the code
 
-7. **Otherwise, format the review** following the resolved template from step 4. Mandatory rules that override the template:
+6. **Otherwise, format the review** following the resolved template from step 3. Mandatory rules that override the template:
    - **Every issue gets a sequential number starting at 1, counted globally across all categories.** Do NOT reset numbering per category. This is how the user references issues ("ignore 2", "fix 3").
    - Group issues by category heading (bold markdown), but keep the global numbering continuous across groups.
    - Each issue: one-line title, short explanation, and when relevant a code diff block showing the before/after with file path.
    - Simple, objective language. Markdown output. Written in `$2`.
 
-8. **Save the review.**
+7. **Save the review.**
    Write the final markdown to `./tmp/code-review.md`.
 
-9. **Report back** in plain text (in `$2` language):
+8. **Report back** in plain text (in `$2` language):
    - Which template was used (the file path).
    - The diff file path (`./tmp/diff.txt`).
    - The review file path (`./tmp/code-review.md`).

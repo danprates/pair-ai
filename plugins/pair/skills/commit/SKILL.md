@@ -3,7 +3,7 @@ name: commit
 description: Generate a conventional-commit message from staged changes and commit
 disable-model-invocation: true
 model: claude-haiku-4-5-20251001
-allowed-tools: Bash(git add:*), Bash(git diff:*), Bash(git commit:*), Bash(git rev-parse:*), Bash(mkdir:*), Write
+allowed-tools: Bash(git add:*), Bash(git diff:*), Bash(git commit:*), Bash(git rev-parse:*), Bash(mkdir:*), Read
 ---
 
 # commit
@@ -32,22 +32,15 @@ Generate a Conventional Commits message from the currently staged changes (auto-
 
    If a ticket is extracted, use it **verbatim** as the scope. Never invent or normalize a scope that was not present in the branch.
 
-4. **Stage and capture the diff.**
+4. **Stage and save the diff.**
 
    ```bash
-   git add .
-   git diff --cached
+   git add . && mkdir -p ./tmp && git diff --cached > ./tmp/diff.txt
    ```
 
-5. **Save the diff for inspection.**
+   Then read `./tmp/diff.txt` to analyze the changes.
 
-   ```bash
-   mkdir -p ./tmp
-   ```
-
-   Write the diff output from step 4 to `./tmp/diff.txt`.
-
-6. **Generate the commit message** following these rules:
+5. **Generate the commit message** following these rules:
    - **Format:** `type(scope): subject` if a ticket was extracted, otherwise `type: subject`.
    - **Type** (Conventional Commits): one of `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
    - **Scope:** only when extracted in step 3, verbatim (e.g. `JIRA-1234`).
@@ -60,13 +53,13 @@ Generate a Conventional Commits message from the currently staged changes (auto-
      - Written in the language requested by `$1`.
    - Output only the final line. No explanation, no quotes around it.
 
-7. **Create the commit.**
+6. **Create the commit.**
 
    ```bash
    git commit -m "<generated message>"
    ```
 
-8. **Report back** in plain text:
+7. **Report back** in plain text:
    - The extracted ticket (or `no ticket detected`).
    - The resulting commit SHA (from `git rev-parse HEAD` or the `git commit` output).
    - The commit message exactly as used.
