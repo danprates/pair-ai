@@ -1,28 +1,28 @@
 # Pair AI
 
-> Four Claude Code skills that handle the git chores you do after every coding session.
+> A Claude Code plugin for the work you do around the code.
 
-If you use [Claude Code](https://claude.ai/code), `pair` gives you four slash commands that cover the most repetitive parts of the git workflow: writing a commit message, reviewing your changes before pushing, drafting a pull-request description, and generating a handoff document for other teams. Each one reads your actual diff — no copy-pasting, no context switching.
+Writing a commit message, self-reviewing before you open a PR, explaining a change to QA, onboarding a peer to a decision you made at 2am — none of that is writing code, but all of it takes time and energy. `pair` handles the writing so you can focus on the thinking.
 
 ```text
 /pair:commit
 /pair:code-review
 /pair:pull-request
 /pair:handoff
+/pair:explain
 ```
 
 ---
 
-## Why bother?
+## What each skill is for
 
-Writing a good commit message, doing an honest self-review, and drafting a PR description that reviewers actually read are all things most developers do hastily — or skip entirely. `pair` doesn't replace your judgment; it does the mechanical work so you can focus on the call.
+- **Commit** — "What changed here?" Stages everything, reads the diff, writes a [Conventional Commits](https://www.conventionalcommits.org/) message. Your future self and your team's `git log` will thank you.
+- **Code review** — "Did I miss anything?" Runs a numbered review of your branch before you ask anyone else to look at it. Catches the thing you stopped noticing after the third read.
+- **Pull request** — "What does my reviewer need to know?" Generates a PR description from your commit history. Picks up your repo's existing PR template if one exists.
+- **Handoff** — "What changes on your end?" Writes a knowledge-transfer document aimed at frontend developers and QA — what was done, which scenarios are covered, how to integrate, and how to validate.
+- **Explain** — "Why these decisions?" Narrates the implementation story of your branch in chronological order, with annotated diff blocks showing what changed and why. Useful before a review or when onboarding a peer to a non-trivial change.
 
-- **Commit** — stages everything, reads the diff, and produces a [Conventional Commits](https://www.conventionalcommits.org/) message. If your branch name contains a Jira or Azure DevOps ticket, the scope is extracted automatically.
-- **Code review** — compares the current branch against a base branch and produces a numbered issue list. You can then say "fix 2, ignore 3" in follow-up messages.
-- **Pull request** — generates a PR description from your commit history. Picks up your repo's existing PR template if one exists.
-- **Handoff** — generates a cross-area knowledge transfer document for frontend developers and QA: what was done, which scenarios are covered, how to integrate, and how to implement or validate.
-
-All three skills write their output to `./tmp/` so you can inspect, edit, and version it before pushing.
+Skills that produce documents write their output to `./tmp/` so you can inspect, edit, and version it before sharing.
 
 ---
 
@@ -80,9 +80,11 @@ Output is saved to `./tmp/pull-request.md`.
 2. `.github/pull_request_template.md` (or `PULL_REQUEST_TEMPLATE.md`, or any `*.md` inside `.github/pull_request_template/`) — your repo's convention
 3. The plugin's built-in template
 
+---
+
 ### `/pair:handoff [base-branch] [language]`
 
-Generates a cross-area handoff document from the commits that diverge from the base branch. Written for **frontend developers and QA** — not the team that wrote the code. Covers what was done, which scenarios are handled, how to integrate, and how to implement or validate.
+Generates a cross-area knowledge transfer document from the commits that diverge from the base branch. Written for **frontend developers and QA** — not the team that wrote the code. Covers what was done, which scenarios are handled, how to integrate, and how to implement or validate.
 
 ```text
 /pair:handoff
@@ -98,6 +100,26 @@ Output is saved to `./tmp/handoff.md`.
 
 ---
 
+### `/pair:explain [base-branch] [language]`
+
+Narrates the implementation story of the current branch in **chronological order** — what was done, in which sequence, and why each decision was made. Written for the author preparing to present the PR, or a peer reviewer who wants to understand the decisions before reading the diff cold.
+
+Each logical phase gets its own section with annotated diff blocks: the actual code change with a comment line (using the file's language syntax — `//`, `#`, `--`, etc.) inserted right before the changed lines, explaining the reason for that specific change.
+
+```text
+/pair:explain
+/pair:explain main pt-BR
+```
+
+Output is saved to `./tmp/explain.md`.
+
+**Template resolution order** (first match wins):
+
+1. `./tmp/templates/explain.md` — your project-local override
+2. The plugin's built-in template
+
+---
+
 ## Install
 
 Two commands inside any Claude Code session:
@@ -107,7 +129,7 @@ Two commands inside any Claude Code session:
 /plugin install pair@pair
 ```
 
-The three skills become available in every project on that machine — no per-repo setup needed.
+All skills become available in every project on that machine — no per-repo setup needed.
 
 ---
 
@@ -120,6 +142,7 @@ Drop a Markdown file in `./tmp/templates/` of the project you're working on to o
 | `tmp/templates/code-review.md`  | Review format                                |
 | `tmp/templates/pull-request.md` | PR description format (beats `.github/` too) |
 | `tmp/templates/handoff.md`      | Handoff document format                      |
+| `tmp/templates/explain.md`      | Explain document format                      |
 
 The global issue-numbering contract in `code-review` still applies even with a custom template — issues must be numbered sequentially across all categories so follow-up references stay unambiguous.
 
