@@ -2,6 +2,7 @@
 name: pull-request
 description: Generate a PR description from commits between the current branch and a base branch
 disable-model-invocation: true
+model: claude-haiku-4-5-20251001
 allowed-tools: Bash(git log:*), Bash(git diff:*), Bash(ls:*), Bash(mkdir:*), Write, Read, Glob
 ---
 
