@@ -2,6 +2,7 @@
 name: code-review
 description: Review the diff between current branch and a base branch, saving a numbered report
 disable-model-invocation: true
+model: claude-opus-4-7
 allowed-tools: Bash(git log:*), Bash(git diff:*), Bash(mkdir:*), Write, Read
 ---
 
