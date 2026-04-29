@@ -38,6 +38,7 @@ Generate a pull-request description from the commits on the current branch that 
    Use `Read` on each candidate in order. The first existing file wins.
 
 4. **Generate the PR description** following the resolved template:
+   - **The PR title is mandatory.** Every output must begin with a title line, regardless of template. No exceptions.
    - Fill every section of the template using what the diff from step 2 actually shows. Do not invent content; if a section cannot be filled from the diff, keep the heading with a brief honest placeholder like `N/A` or a single-line summary.
    - Use simple, clear, objective, concise language.
    - Markdown output.
