@@ -40,7 +40,13 @@ Generate a Conventional Commits message from the currently staged changes (auto-
 
    Then read `./tmp/diff.txt` to analyze the changes.
 
-5. **Generate the commit message** following these rules:
+5. **Check for project commit conventions.**
+
+   Try to read `./CLAUDE.md`. If it exists and contains a section about commit message format or conventions, use those rules as the primary format guide in step 6. If the file does not exist or has no relevant section, fall back to the default rules in step 6.
+
+6. **Generate the commit message.**
+
+   If project conventions were found in step 5, follow them. Otherwise apply these defaults:
    - **Format:** `type(scope): subject` if a ticket was extracted, otherwise `type: subject`.
    - **Type** (Conventional Commits): one of `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
    - **Scope:** only when extracted in step 3, verbatim (e.g. `JIRA-1234`).
@@ -53,13 +59,13 @@ Generate a Conventional Commits message from the currently staged changes (auto-
      - Written in the language requested by `$1`.
    - Output only the final line. No explanation, no quotes around it.
 
-6. **Create the commit.**
+7. **Create the commit.**
 
    ```bash
    git commit -m "<generated message>"
    ```
 
-7. **Report back** in plain text:
+8. **Report back** in plain text:
    - The extracted ticket (or `no ticket detected`).
    - The resulting commit SHA (from `git rev-parse HEAD` or the `git commit` output).
    - The commit message exactly as used.
