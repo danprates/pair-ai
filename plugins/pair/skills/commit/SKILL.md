@@ -3,7 +3,7 @@ name: commit
 description: Generate a conventional-commit message from staged changes and commit
 disable-model-invocation: true
 model: claude-haiku-4-5-20251001
-allowed-tools: Bash(git add:*), Bash(git diff:*), Bash(git status:*), Bash(git commit:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(mkdir:*), Write
+allowed-tools: Bash(git add:*), Bash(git diff:*), Bash(git commit:*), Bash(git rev-parse:*), Bash(mkdir:*), Write
 ---
 
 # commit
