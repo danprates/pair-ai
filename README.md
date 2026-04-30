@@ -11,6 +11,7 @@ Writing a commit message, self-reviewing before you open a PR, explaining a chan
 /pair:handoff
 /pair:explain
 /pair:guide
+/pair:verify
 ```
 
 ---
@@ -23,6 +24,7 @@ Writing a commit message, self-reviewing before you open a PR, explaining a chan
 - **Handoff** — "What changes on your end?" Writes a knowledge-transfer document aimed at frontend developers and QA — what was done, which scenarios are covered, how to integrate, and how to validate.
 - **Explain** — "Why these decisions?" Narrates the implementation story of your branch in chronological order, with annotated diff blocks showing what changed and why. Useful before a review or when onboarding a peer to a non-trivial change.
 - **Guide** — "Where do I even start?" Generates a step-by-step implementation guide for a feature: which files to create or modify, why each change is needed, and how to verify each step. Grounds every recommendation in the actual codebase so advice is specific, not generic.
+- **Verify** — "Does this actually do what was asked?" Adversarial check that your implementation matches a task spec and that a quality gate passes. Reports gaps as numbered issues — each one explains what is wrong, why it matters in production, where exactly in the code the problem lives, and how to fix it.
 
 Skills that produce documents write their output to `./tmp/` so you can inspect, edit, and version it before sharing.
 
@@ -141,6 +143,34 @@ Output is saved to `./tmp/guide.md`.
 
 ---
 
+### `/pair:verify [base-branch] [task-doc] [test-command] [language]`
+
+Verifies whether the implementation on the current branch matches a task spec and passes a quality gate. This is an **adversarial** review — its job is to find gaps, not to confirm that the work is done. The output is a numbered issue report with a PASS / PARTIAL / FAIL verdict, saved to `./tmp/verify.md`.
+
+| Argument       | Default | Description                                                                                         |
+| -------------- | ------- | --------------------------------------------------------------------------------------------------- |
+| `base-branch`  | `dev`   | Branch to diff against                                                                              |
+| `task-doc`     | —       | Path to a spec document (PRD, task file, plain text). Without one, commit messages become the spec. |
+| `test-command` | —       | Quality-gate command to run (e.g. `npm test`). If omitted, a [CRITICAL] issue is added automatically — no gate means the implementation cannot be considered verified. |
+| `language`     | `en`    | Output language                                                                                     |
+
+```text
+/pair:verify
+/pair:verify main
+/pair:verify main ./docs/tasks/my-task.md
+/pair:verify main ./docs/tasks/my-task.md "npm test"
+/pair:verify main ./docs/tasks/my-task.md "npm test" pt-BR
+```
+
+Every issue in the report includes four parts: what is wrong, why it matters in production, where in the code the problem lives (with an annotated diff block and inline comments explaining the specific line), and how to fix it — written so a junior developer can act on it without follow-up questions.
+
+**Template resolution order** (first match wins):
+
+1. `./tmp/templates/verify.md` — your project-local override
+2. The plugin's built-in template
+
+---
+
 ## Install
 
 Two commands inside any Claude Code session:
@@ -165,8 +195,9 @@ Drop a Markdown file in `./tmp/templates/` of the project you're working on to o
 | `tmp/templates/handoff.md`      | Handoff document format                      |
 | `tmp/templates/explain.md`      | Explain document format                      |
 | `tmp/templates/guide.md`        | Guide document format                        |
+| `tmp/templates/verify.md`       | Verify report format                         |
 
-The global issue-numbering contract in `code-review` still applies even with a custom template — issues must be numbered sequentially across all categories so follow-up references stay unambiguous.
+The global issue-numbering contract applies to both `code-review` and `verify` even with a custom template — issues must be numbered sequentially across all categories so follow-up references stay unambiguous.
 
 ---
 
