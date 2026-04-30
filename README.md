@@ -10,6 +10,7 @@ Writing a commit message, self-reviewing before you open a PR, explaining a chan
 /pair:pull-request
 /pair:handoff
 /pair:explain
+/pair:guide
 ```
 
 ---
@@ -21,6 +22,7 @@ Writing a commit message, self-reviewing before you open a PR, explaining a chan
 - **Pull request** — "What does my reviewer need to know?" Generates a PR description from your commit history. Picks up your repo's existing PR template if one exists.
 - **Handoff** — "What changes on your end?" Writes a knowledge-transfer document aimed at frontend developers and QA — what was done, which scenarios are covered, how to integrate, and how to validate.
 - **Explain** — "Why these decisions?" Narrates the implementation story of your branch in chronological order, with annotated diff blocks showing what changed and why. Useful before a review or when onboarding a peer to a non-trivial change.
+- **Guide** — "Where do I even start?" Generates a step-by-step implementation guide for a feature: which files to create or modify, why each change is needed, and how to verify each step. Grounds every recommendation in the actual codebase so advice is specific, not generic.
 
 Skills that produce documents write their output to `./tmp/` so you can inspect, edit, and version it before sharing.
 
@@ -120,6 +122,25 @@ Output is saved to `./tmp/explain.md`.
 
 ---
 
+### `/pair:guide <description-or-path> [language]`
+
+Generates a concrete, step-by-step implementation guide for a feature. The first argument is either a short description of what you want to build, or a path to an existing document (PRD, task file, plain text). The skill explores the codebase to anchor every recommendation in real files — which existing service to follow, which spec to copy, which test pattern to use.
+
+```text
+/pair:guide "add password reset flow"
+/pair:guide ./docs/tasks/reset-password.md
+/pair:guide "add CSV export to reports" pt-BR
+```
+
+Output is saved to `./tmp/guide.md`.
+
+**Template resolution order** (first match wins):
+
+1. `./tmp/templates/guide.md` — your project-local override
+2. The plugin's built-in template
+
+---
+
 ## Install
 
 Two commands inside any Claude Code session:
@@ -143,6 +164,7 @@ Drop a Markdown file in `./tmp/templates/` of the project you're working on to o
 | `tmp/templates/pull-request.md` | PR description format (beats `.github/` too) |
 | `tmp/templates/handoff.md`      | Handoff document format                      |
 | `tmp/templates/explain.md`      | Explain document format                      |
+| `tmp/templates/guide.md`        | Guide document format                        |
 
 The global issue-numbering contract in `code-review` still applies even with a custom template — issues must be numbered sequentially across all categories so follow-up references stay unambiguous.
 
