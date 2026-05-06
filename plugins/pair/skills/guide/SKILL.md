@@ -2,6 +2,7 @@
 name: guide
 description: Mentor-style implementation guide for a feature — what to change, where, why we do it this way, what to watch for, and how to verify each step
 disable-model-invocation: true
+context: fork
 model: claude-sonnet-4-6
 allowed-tools: Bash(mkdir:*), Bash(grep:*), Glob, Read, Write
 ---

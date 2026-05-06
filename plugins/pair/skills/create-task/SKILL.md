@@ -2,6 +2,7 @@
 name: create-task
 description: Create a focused task document for a small, self-contained feature — overview, files to change with rationale, acceptance criteria, and a testing plan. Serves as both an implementation roadmap and a memory of what was done.
 disable-model-invocation: true
+context: fork
 model: claude-opus-4-7
 allowed-tools: Bash(mkdir:*), Bash(grep:*), Glob, Read, Write
 ---
