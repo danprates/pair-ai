@@ -4,8 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-A Claude Code plugin called `pair` that ships seven user-invocable skills:
-`/pair:commit`, `/pair:code-review`, `/pair:pull-request`, `/pair:handoff`, `/pair:explain`, `/pair:guide`, `/pair:verify`. There is no
+A Claude Code plugin called `pair` that ships eight user-invocable skills:
+`/pair:commit`, `/pair:code-review`, `/pair:pull-request`, `/pair:handoff`, `/pair:explain`, `/pair:guide`, `/pair:verify`, `/pair:create-task`. There is no
 application code, no build step, and no test suite — the deliverable is the
 markdown `SKILL.md` files under `plugins/pair/skills/` plus their templates.
 
@@ -16,9 +16,9 @@ markdown `SKILL.md` files under `plugins/pair/skills/` plus their templates.
 - [`plugins/pair/skills/<skill>/SKILL.md`](plugins/pair/skills/) — each skill is a markdown file with YAML frontmatter. Frontmatter fields that matter:
   - `allowed-tools` — most skills are restricted to narrow `Bash(git …:*)` invocations plus `Write`/`Read`/`Glob`. The `verify` skill additionally allows `Bash(bash:*)` and `Bash(sh:*)` to run user-supplied test commands. Keep additions minimal when editing.
   - `disable-model-invocation: true` — these skills only run when the user types `/pair:<name>`; the model must not auto-invoke them.
-- `plugins/pair/skills/code-review/template.md`, `plugins/pair/skills/pull-request/template.md`, `plugins/pair/skills/handoff/template.md`, `plugins/pair/skills/explain/template.md`, `plugins/pair/skills/guide/template.md`, and `plugins/pair/skills/verify/template.md` — the built-in output templates referenced inside the skills via `${CLAUDE_PLUGIN_ROOT}`.
+- `plugins/pair/skills/code-review/template.md`, `plugins/pair/skills/pull-request/template.md`, `plugins/pair/skills/handoff/template.md`, `plugins/pair/skills/explain/template.md`, `plugins/pair/skills/guide/template.md`, `plugins/pair/skills/verify/template.md`, and `plugins/pair/skills/create-task/template.md` — the built-in output templates referenced inside the skills via `${CLAUDE_PLUGIN_ROOT}`.
 - [`NOTES.md`](NOTES.md) — Portuguese roadmap of planned skills (`handoff`, `explain`, `guide`, `create-prd`, `create-epic`, `create-task`, `verify`). Treat as backlog, not spec.
-- `tmp/` is gitignored; it holds the user-project output of the skills (`diff.txt`, `code-review.md`, `pull-request.md`, `handoff.md`, `explain.md`, `guide.md`, `verify.md`) and is also the location users use to override templates (`tmp/templates/<skill>.md`).
+- `tmp/` is gitignored; it holds the user-project output of the skills (`diff.txt`, `code-review.md`, `pull-request.md`, `handoff.md`, `explain.md`, `guide.md`, `verify.md`) and task documents (`tasks/NNN-<slug>.md`); it is also the location users use to override templates (`tmp/templates/<skill>.md`).
 
 ## Local development loop
 
@@ -33,7 +33,7 @@ written under `./tmp/`.
 
 ## Cross-skill contracts (don't break these)
 
-- **Output paths are part of the public contract.** `commit` writes `./tmp/diff.txt`; `code-review` writes `./tmp/diff.txt` and `./tmp/code-review.md`; `pull-request` writes `./tmp/diff.txt` and `./tmp/pull-request.md`; `handoff` writes `./tmp/diff.txt` and `./tmp/handoff.md`; `explain` writes `./tmp/diff.txt` and `./tmp/explain.md`; `guide` writes `./tmp/guide.md` only (no diff — it is prospective); `verify` writes `./tmp/diff.txt` and `./tmp/verify.md`. Users rely on these paths — do not rename them.
+- **Output paths are part of the public contract.** `commit` writes `./tmp/diff.txt`; `code-review` writes `./tmp/diff.txt` and `./tmp/code-review.md`; `pull-request` writes `./tmp/diff.txt` and `./tmp/pull-request.md`; `handoff` writes `./tmp/diff.txt` and `./tmp/handoff.md`; `explain` writes `./tmp/diff.txt` and `./tmp/explain.md`; `guide` writes `./tmp/guide.md` only (no diff — it is prospective); `verify` writes `./tmp/diff.txt` and `./tmp/verify.md`; `create-task` writes `./tmp/tasks/NNN-<slug>.md` only (no diff — it is prospective; sequential numbering, e.g. `./tmp/tasks/001-add-rate-limiting.md`). Users rely on these paths — do not rename them.
 - **Template resolution order is fixed** and must be preserved when editing either skill:
   1. `./tmp/templates/<skill>.md` (user project override)
   2. For `pull-request` only: `.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE.md`, then first `*.md` inside `.github/{pull_request_template,PULL_REQUEST_TEMPLATE}/`.

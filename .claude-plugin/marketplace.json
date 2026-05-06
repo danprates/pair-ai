@@ -7,7 +7,7 @@
     {
       "name": "pair",
       "source": "./plugins/pair",
-      "description": "Commit, code-review, pull-request, handoff, explain, and guide skills"
+      "description": "Commit, code-review, pull-request, handoff, explain, guide, verify, and create-task skills"
     }
   ]
 }
