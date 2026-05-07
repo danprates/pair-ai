@@ -1,61 +1,64 @@
-# Task: <imperative title — e.g. "Add rate-limiting to the auth route">
+# Task NNN: <imperative title — e.g. "Add rate-limiting to the auth route">
 
-TODO: adicione o status dessa task, como "TODO", "IN PROGRESS", "REVIEW", "DONE"
+**Status:** TODO
 
 ## Context
 
-(One short paragraph. Why does this task exist? What problem does it solve? What does the system look like before this change, and what does it look like after? Write it the way you would explain the task to a teammate during a standup — plain language, no padding.)
+(One short paragraph. Why does this task exist? What problem does it solve? What does the system look like before this change, and after? Write it the way you would explain this to a teammate during standup — plain language, no padding.)
+
+---
+
+## Independence guarantee
+
+This task has no dependencies on other tasks in this suite and can be executed in any order. Specifically: (one sentence stating which files it creates or modifies, and confirming no other task in the suite touches those same files.)
 
 ---
 
 ## Reference
 
-The closest analogous feature already in the codebase is **`<path/to/reference/feature/>`**.
+The closest analogous feature in the codebase is **`<path/to/reference/>`**.
 
-(Two or three sentences on why this is the right reference: same layer? same shape of input/output? same kind of side effect? Tell the developer to read it before writing any code, and point out which parts to pay closest attention to.)
+(Two or three sentences on why this is the right reference: same layer? same input/output shape? same kind of side effect? Tell the sub-agent to read it before writing any code, and point out which parts to focus on.)
 
 ---
 
 ## Files to change
 
-| File              | Action                   | Why this file (not another)                                                                                                                                                    |
-| ----------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `<path/to/file>`  | create / modify / delete | (Tie the choice to a convention, to the reference feature, or to the project's layer architecture. If you cannot give a specific reason, write "TBD — confirm with the team".) |
-| `<path/to/other>` | create / modify / delete |                                                                                                                                                                                |
+| File              | Action                   | Why this file (not another)                                                                                                                                    |
+| ----------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<path/to/file>`  | create / modify / delete | (Tie the choice to a convention, the reference feature, or the layer architecture. If you cannot give a specific reason, write "TBD — confirm with the team".) |
+| `<path/to/other>` | create / modify / delete |                                                                                                                                                                |
 
 ---
 
 ## Acceptance criteria
 
-- [ ] (Condition — specific and falsifiable. Example: "GET /users/:id returns 404 when the user does not exist.")
-- [ ] (Condition — specific and falsifiable.)
-- [ ] (Condition — specific and falsifiable.)
+- [ ] (Falsifiable condition. Example: "GET /users/:id returns 404 when the user does not exist.")
+- [ ] (Falsifiable condition.)
+- [ ] (Falsifiable condition.)
 
 ---
 
 ## Testing plan
 
-(The exact commands, requests, or assertions that demonstrate the feature works. Include at least one happy-path case and one edge/failure case. Specific over generic.)
-
 **Happy path**
 
 ```bash
-# Example
-curl -X POST /api/... -d '{"field": "value"}'
-# Expected: 201 Created with { "id": "..." }
+# Exact command
+# Expected: <output>
 ```
 
-**Edge / failure cases**
+**Failure case**
 
 ```bash
-# Example
-curl -X POST /api/... -d '{}'
-# Expected: 400 Bad Request with { "error": "field is required" }
+# Exact command
+# Expected: <output>
 ```
 
-**Regression check**
+---
 
-```bash
-# Run the existing test suite to confirm nothing broke
-npm test
-```
+## Sub-agent invocation
+
+When spawning this task as a sub-agent, use this prompt verbatim:
+
+> Read the task document at `<path-to-this-file>` and implement it completely. Do not ask for clarification — if something is ambiguous, make the safest choice and note it. When done, report exactly one of: **DONE**, **FAILED**, or **PARTIAL** — followed by one sentence summarizing what was done or what blocked you.

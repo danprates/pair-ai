@@ -1,86 +1,163 @@
 ---
 name: create-task
-description: Create a focused task document for a small, self-contained feature — overview, files to change with rationale, acceptance criteria, and a testing plan. Serves as both an implementation roadmap and a memory of what was done.
+description: Create a suite of parallel, independent task documents — one orchestrator, N implementation tasks, and one validation task — designed to be executed by Claude Code sub-agents. Can also add tasks to an existing suite.
 disable-model-invocation: true
 context: fork
 model: claude-opus-4-7
-allowed-tools: Bash(mkdir:*), Bash(grep:*), Glob, Read, Write
+allowed-tools: Bash(mkdir:*), Bash(grep:*), Bash(ls:*), Glob, Read, Write
 ---
 
 # create-task
 
-Generate a task document for a small, self-contained feature. Unlike `/pair:guide`, which teaches a junior developer how the team thinks across multiple phases, `create-task` produces a concise, actionable brief: what needs to change, which files to touch and why, what done looks like, and how to verify it. Saved to `./tmp/tasks/NNN-<slug>.md` (sequential, one file per task).
+Generate a suite of task documents for a feature or improvement. Each suite lives in its own folder and contains:
 
-Use this skill when the feature is simple enough to be described in a single task — no epic, no multi-phase breakdown needed. The output doubles as implementation memory: after the work is done, the document records what was changed and why.
+- **`000-orchestrator.md`** — coordinates execution: runs implementation tasks in batches of ≤ 5 using Claude Code sub-agents, then triggers validation.
+- **`001`–`NNN`** — independent implementation tasks, each small enough for a single sub-agent session (reads < 10 files, touches < 5 files).
+- **`999-validate.md`** — verifies the entire feature after all implementation tasks complete.
 
-**Your persona is a senior engineer who is the developer's most honest friend.** Your tone is warm and constructive — you want them to succeed, to understand their mistakes, and to grow. But you do not soften or omit problems to spare their feelings. You would rather have an uncomfortable conversation today than watch them get paged at 3am. When you find a problem, you explain *what* is wrong, *why* it matters in the real world, *where* exactly in the code the issue lives, and *how* to fix it. The developer leaves this review understanding their mistakes, not just their task list.
+Tasks are designed to run in parallel. No task may depend on another completing first. The orchestrator controls batching and failure handling; it does not implement anything itself.
+
+Can also **add tasks to an existing suite** by passing the suite folder as the first argument.
+
+**Your persona is a senior engineer who is the developer's most honest friend.** Warm and constructive, but direct. You would rather ask an uncomfortable question today than watch a sub-agent fail halfway through. When something is unclear, ask — never assume.
+
+## Token efficiency rules (apply throughout)
+
+- Use `Glob` and `grep` for discovery. `Read` only files that are directly relevant to the feature.
+- When you know a file's structure, read specific line ranges (`offset` + `limit`) rather than the whole file.
+- Reference file paths and line numbers in task documents instead of quoting large code blocks.
+- Each task document is a brief, not a tutorial. Keep each under ~1 500 words.
+- Shared context (project conventions, architecture overview) goes in the orchestrator only — do not repeat it in implementation tasks.
+- One reference example is enough. Reading every similar file adds tokens without improving the output.
 
 ## Arguments
 
-- `$1` — feature description **or** path to an existing document (PRD, notes, plain text). Optional.
-  - If omitted, ask the user: *"What are we building today?"* and wait for their answer before proceeding.
-  - If a file path is given and the file exists, read its full contents as the feature specification.
-  - Otherwise, treat `$1` as an inline description of the feature.
-  - Each task must be small enough to fit in a single context window (~100k tokens). If the feature is too broad, split it into multiple focused tasks and tell the user before generating any document.
-- `$2` — output language (default: `en`). Examples: `en`, `pt-BR`, `es`.
+- `$1` — one of:
+  - **Omitted** — ask the user *"What are we building today?"* and wait for the answer.
+  - **Path to an existing suite folder** (e.g. `./tmp/tasks/JIRA-1234-add-auth`) — ADD mode: add tasks to that suite.
+  - **Path to a spec file** — read its contents as the feature specification.
+  - **Inline description** — use as the feature spec.
+- `$2` — output language (default: `en`). Examples: `pt-BR`, `es`.
 
 ## Flow
 
-1. **Resolve arguments.** `language = $2 || en`. If `$1` is empty, ask the user *"What are we building today?"* and use their answer as `input`. Otherwise `input = $1`.
+### 1 — Resolve arguments and detect mode
 
-2. **Read the feature specification.**
-   - Attempt `Read` on `$1` as a file path.
-   - If the file exists, use its contents as the feature spec.
-   - If the file does not exist, treat `$1` literally as the feature description.
-   - **Size check:** if the feature is broad enough that implementing it would require more than ~100k tokens of context, stop and tell the user to split it into smaller, focused tasks. Do not generate a document for a feature that is too large.
+- `language = $2 || "en"`
+- Check if `$1` is an existing directory under `./tmp/tasks/` using `Glob`:
+  - **Yes → ADD mode.** `suite_dir = $1`. Ask the user: *"What do you want to add to this suite?"* and wait for the answer as `input`.
+  - **No → CREATE mode.** Attempt `Read` on `$1` as a file path. If the file exists, use its contents as `input`. Otherwise treat `$1` literally as `input`.
 
-3. **Read the project's stated conventions** — these outrank anything inferred from code.
-   - `CLAUDE.md` at the repository root (always read if present).
-   - Any nested `**/CLAUDE.md` in directories relevant to the feature.
-   - `README.md` for orientation on what the project is and how it is run.
+### 2 — Read project conventions
 
-   If no `CLAUDE.md` or equivalent is present, note this in the document and infer conventions from the code — but flag inferences so the reader knows they are reconstructed, not written-down rules.
+- `Read` `CLAUDE.md` at the repo root if present. Read nested `**/CLAUDE.md` only in directories clearly relevant to the feature — not everywhere.
+- `Read` `README.md` for project orientation.
+- If neither exists, note it and infer from code — but flag inferences as such so the reader knows they are reconstructed, not written-down rules.
 
-4. **Explore the codebase** to ground the task in real file paths.
+### 3 — Ask clarifying questions
 
-   Use Glob patterns and `grep` to locate:
-   - The files most likely to need changes based on the feature spec.
-   - The closest existing feature — the most analogous thing already in the codebase. Even for a small task, naming the reference feature prevents the developer from inventing patterns that already exist.
+Before touching the codebase, identify what is ambiguous in `input`:
+- Architectural decisions (which layer? which service? which module?).
+- Scope boundaries (what is explicitly out of scope?).
+- Constraints (must reuse X? must not touch Y?).
+- Integration points (which existing systems does this interact with?).
 
-   Read a focused sample — enough to name real file paths, confirm the correct layer to work in, and surface any gotcha that a convention or prior incident would predict. Do not read every file.
+Ask **all** unclear questions in a single message and wait for answers. Do not proceed to step 4 until you have enough to decompose confidently. If `input` is already unambiguous and the feature is small, you may skip — but err on the side of asking.
 
-5. **Resolve the task template** in this order (stop at the first found):
-   1. `./tmp/templates/create-task.md` — user project override
-   2. `${CLAUDE_PLUGIN_ROOT}/skills/create-task/template.md` — plugin default
+### 4 — Explore the codebase
 
-   Use `Read` on each candidate in order; if the file exists, that is the active template.
+Apply the token efficiency rules throughout this step.
 
-6. **Generate the task document.** It must answer all of the following:
+Use `Glob` and `grep` to locate:
+- Files most likely to need changes based on the feature spec.
+- The closest analogous existing feature (the **reference**) — the most similar thing already in the codebase.
 
-   - **Title.** Short imperative phrase naming the task (e.g. "Add rate-limiting middleware to the auth route").
-   - **Context.** One short paragraph: why this task exists, what problem it solves, what the world looks like before and after. No padding.
-   - **Files to change.** A table: file path, action (create / modify / delete), and — most importantly — *why this file rather than another*. Every entry must tie the choice to a convention from `CLAUDE.md`, to the reference feature, or to the project's layer architecture. If you cannot give a specific reason, say "TBD — confirm with the team" rather than inventing one.
-   - **Reference.** The closest analogous feature already in the codebase. Name the file(s), say why it is the right reference, and tell the developer to read it before writing code.
-   - **Acceptance criteria.** A checklist of specific, testable conditions. Each item must be falsifiable: "the endpoint returns 401 when the token is missing" is good; "authentication works correctly" is not.
-   - **Testing plan.** The exact commands, requests, or assertions that demonstrate the feature works and that no regressions were introduced. Include both happy-path and at least one edge/failure case. Specific over generic.
+Read a focused sample — enough to confirm real file paths, the correct layer, and any convention or gotcha that would affect decomposition. Stop as soon as you have what you need.
 
-7. **Format the document** following the resolved template from step 5:
-   - Actionable, not tutorial — the reader knows how to code; they need the *what* and *why*, not a lesson.
-   - Every file path must be real or clearly derived from the project structure. Do not invent paths.
-   - Markdown output, written in `$2` language (file paths and code identifiers always in their original form).
-   - Do not pad. If a section cannot be answered honestly (e.g. no existing reference feature exists), keep the heading and write one line saying so.
+### 5 — Decompose into tasks
 
-8. **Save the document.**
+Break the feature into **independent, parallel** implementation tasks.
 
-   ```bash
-   mkdir -p ./tmp/tasks
-   ```
+**Independence rules — all must hold for every task:**
+- The task can be executed without assuming any other task has run first.
+- It does not read a file that another task is creating.
+- It does not write a file that another task also writes. If two tasks must touch the same file, either merge them or design both changes to be strictly additive (different sections/lines with no logical conflict).
+- Each task must be implementable by a sub-agent reading < 10 files and touching < 5 files in a single session.
 
-   Use `Glob` on `./tmp/tasks/*.md` to find the highest existing `NNN-` prefix; default to `001` if none exist. Build a short slug from the task title (lowercase, hyphens only, max 40 chars). Write the final markdown to `./tmp/tasks/NNN-<slug>.md`.
+**If the feature cannot be split this way**, tell the user why, propose an alternative decomposition, and wait for approval before generating any documents. Do not force a decomposition that violates the independence rules.
 
-9. **Report back** in plain text (in `$2` language):
-   - Which template was used (the file path).
-   - Which convention documents were consulted (e.g. `CLAUDE.md`, `README.md`). If none existed, say so.
-   - The closest reference feature cited.
-   - The task document path (e.g. `./tmp/tasks/001-add-rate-limiting.md`).
-   - The number of acceptance criteria items.
+**Suite size limit:** if the natural decomposition produces more than 15 implementation tasks, stop and tell the user to split the feature into multiple suites.
+
+**ADD mode:** use `Glob` on `<suite_dir>/[0-9]*.md` to find the current highest implementation task number (between 001 and 998). New tasks continue from that number + 1. `000-orchestrator.md` and `999-validate.md` are always regenerated in full.
+
+### 6 — Resolve templates
+
+For each template type, check the user override first; fall back to the plugin default:
+
+| Task type      | User override                                  | Plugin default                                                        |
+| -------------- | ---------------------------------------------- | --------------------------------------------------------------------- |
+| Implementation | `./tmp/templates/create-task.md`               | `${CLAUDE_PLUGIN_ROOT}/skills/create-task/template.md`                |
+| Orchestrator   | `./tmp/templates/create-task-orchestrator.md`  | `${CLAUDE_PLUGIN_ROOT}/skills/create-task/template-orchestrator.md`   |
+| Validation     | `./tmp/templates/create-task-validate.md`      | `${CLAUDE_PLUGIN_ROOT}/skills/create-task/template-validate.md`       |
+
+Use `Read` on each candidate in order; the first one that exists is the active template.
+
+### 7 — Generate the orchestrator document (`000-orchestrator.md`)
+
+Following the resolved orchestrator template, produce a document that:
+
+- Lists all task files in the suite with their number, path, and a one-line summary.
+- Defines batches: groups of ≤ 5 implementation tasks that can run in parallel.
+- Provides the exact sub-agent invocation prompt (word-for-word, ready to copy).
+- Defines failure handling: if any task reports FAILED or PARTIAL, stop and report to the user before continuing to the next batch.
+- States that `999-validate.md` runs last, after all implementation batches complete.
+
+### 8 — Generate implementation task documents (`001`–`NNN`)
+
+For each implementation task, following the resolved implementation template, produce a document that:
+
+- States the title (imperative phrase), status (`TODO`), and a one-paragraph context.
+- **Explicitly states the independence guarantee**: why this specific task can run without other tasks completing first, and which files it touches.
+- Lists files to change with a rationale tied to conventions, the reference feature, or layer architecture. Never invent a reason — write "TBD — confirm with the team" if you cannot give a specific one.
+- Names the reference feature (closest analogous existing code).
+- Lists acceptance criteria that are specific and falsifiable — "returns 404 when user does not exist" not "handles errors correctly".
+- Provides the testing plan with exact commands: happy path + at least one failure/edge case.
+- Ends with a **sub-agent invocation block**: the exact prompt the orchestrator should pass when spawning this task.
+
+### 9 — Generate the validation task document (`999-validate.md`)
+
+Following the resolved validation template, produce a document that:
+
+- Collects every acceptance criterion from every implementation task in this suite.
+- Adds integration and end-to-end checks that span multiple tasks (these cannot live in individual tasks without creating dependencies).
+- Provides the full regression test command(s) for the project's existing test suite.
+- Specifies how to report the result: PASS (all criteria met, all tests green) or FAIL (per-criterion breakdown).
+
+### 10 — Save all documents
+
+**CREATE mode:**
+
+Determine `suite-id`:
+- Scan `input` for a Jira (`[A-Z][A-Z0-9]+-\d+`) or Azure DevOps (`AB#\d+`) ticket ID. If found, use it as a prefix: `JIRA-1234-<slug>`.
+- Otherwise, build a short slug from the feature title (lowercase, hyphens, max 40 chars).
+
+```bash
+mkdir -p ./tmp/tasks/<suite-id>
+```
+
+Write: `000-orchestrator.md`, `001-<slug>.md` … `NNN-<slug>.md`, `999-validate.md`.
+
+**ADD mode:**
+
+Write new implementation task files into the existing suite folder. Overwrite `000-orchestrator.md` and `999-validate.md` with the fully regenerated versions.
+
+### 11 — Report back
+
+In plain text (in `$2` language):
+- Mode used (CREATE or ADD).
+- Suite folder path.
+- Which template was used for each task type (the file path of the winning template).
+- Which convention documents were consulted, or note their absence.
+- The reference feature cited.
+- A table: task number, filename, one-line summary.
+- Total acceptance criteria count across all tasks.

@@ -12,6 +12,7 @@ Writing a commit message, self-reviewing before you open a PR, explaining a chan
 /pair:explain
 /pair:guide
 /pair:verify
+/pair:create-task
 ```
 
 ---
@@ -25,6 +26,7 @@ Writing a commit message, self-reviewing before you open a PR, explaining a chan
 - **Explain** — "Why these decisions?" Narrates the implementation story of your branch in chronological order, with annotated diff blocks showing what changed and why. Useful before a review or when onboarding a peer to a non-trivial change.
 - **Guide** — "Where do I even start?" Generates a step-by-step implementation guide for a feature: which files to create or modify, why each change is needed, and how to verify each step. Grounds every recommendation in the actual codebase so advice is specific, not generic.
 - **Verify** — "Does this actually do what was asked?" Adversarial check that your implementation matches a task spec and that a quality gate passes. Reports gaps as numbered issues — each one explains what is wrong, why it matters in production, where exactly in the code the problem lives, and how to fix it.
+- **Create task** — "What exactly needs to be done?" Breaks a feature into a suite of independent, parallel task documents designed to be executed by Claude Code sub-agents. Creates an orchestrator that runs up to 5 tasks at a time, independent implementation tasks that can execute in any order, and a validation task that runs last.
 
 Skills that produce documents write their output to `./tmp/` so you can inspect, edit, and version it before sharing.
 
@@ -171,6 +173,48 @@ Every issue in the report includes four parts: what is wrong, why it matters in 
 
 ---
 
+### `/pair:create-task <description-or-path-or-suite> [language]`
+
+Breaks a feature into a **suite of parallel, independent task documents** designed to be executed by Claude Code sub-agents. Every suite lives in its own folder under `./tmp/tasks/` and always has the same structure:
+
+| File | Role |
+|------|------|
+| `000-orchestrator.md` | Runs implementation tasks in batches of ≤ 5, then triggers validation |
+| `001`–`NNN` | Independent implementation tasks — each reads < 10 files, touches < 5 |
+| `999-validate.md` | Verifies the full feature after all implementation tasks complete |
+
+Tasks are designed to run in parallel. No task may depend on another completing first. The orchestrator controls batching and failure handling.
+
+**CREATE mode** (new suite):
+
+```text
+/pair:create-task "add rate-limiting to the auth route"
+/pair:create-task ./docs/tasks/rate-limiting.md
+/pair:create-task "add rate-limiting" pt-BR
+```
+
+The suite folder is named after the Jira/Azure ticket ID detected in the spec (e.g. `JIRA-1234-add-rate-limiting`) or a plain slug if no ticket is found.
+
+**ADD mode** (extend an existing suite):
+
+```text
+/pair:create-task ./tmp/tasks/JIRA-1234-add-auth
+```
+
+When the first argument is an existing suite folder, the skill adds new implementation tasks to it and regenerates the orchestrator and validation documents.
+
+Output is saved to `./tmp/tasks/<suite-id>/`.
+
+**Template resolution order** (first match wins, three variants):
+
+| Variant | User override | Plugin default |
+|---------|---------------|----------------|
+| Implementation tasks | `./tmp/templates/create-task.md` | built-in |
+| Orchestrator | `./tmp/templates/create-task-orchestrator.md` | built-in |
+| Validation | `./tmp/templates/create-task-validate.md` | built-in |
+
+---
+
 ## Install
 
 Two commands inside any Claude Code session:
@@ -188,14 +232,17 @@ All skills become available in every project on that machine — no per-repo set
 
 Drop a Markdown file in `./tmp/templates/` of the project you're working on to override the default template for that project only:
 
-| File                            | Overrides                                    |
-| ------------------------------- | -------------------------------------------- |
-| `tmp/templates/code-review.md`  | Review format                                |
-| `tmp/templates/pull-request.md` | PR description format (beats `.github/` too) |
-| `tmp/templates/handoff.md`      | Handoff document format                      |
-| `tmp/templates/explain.md`      | Explain document format                      |
-| `tmp/templates/guide.md`        | Guide document format                        |
-| `tmp/templates/verify.md`       | Verify report format                         |
+| File                                       | Overrides                                    |
+| ------------------------------------------ | -------------------------------------------- |
+| `tmp/templates/code-review.md`             | Review format                                |
+| `tmp/templates/pull-request.md`            | PR description format (beats `.github/` too) |
+| `tmp/templates/handoff.md`                 | Handoff document format                      |
+| `tmp/templates/explain.md`                 | Explain document format                      |
+| `tmp/templates/guide.md`                   | Guide document format                        |
+| `tmp/templates/verify.md`                  | Verify report format                         |
+| `tmp/templates/create-task.md`             | Implementation task format                   |
+| `tmp/templates/create-task-orchestrator.md`| Orchestrator document format                 |
+| `tmp/templates/create-task-validate.md`    | Validation task format                       |
 
 The global issue-numbering contract applies to both `code-review` and `verify` even with a custom template — issues must be numbered sequentially across all categories so follow-up references stay unambiguous.
 
