@@ -205,7 +205,10 @@ The global issue-numbering contract applies to both `code-review` and `verify` e
 
 ```text
 /plugin marketplace update pair
+/reload-plugins
 ```
+
+The second command is required — without it the session keeps running the old version.
 
 ---
 
