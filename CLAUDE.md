@@ -46,6 +46,22 @@ written under `./tmp/`.
 - **Commit subject limit** is 100 characters for the full `type(scope): subject` line, imperative mood, lowercase first letter, no trailing period, no "and"/"or".
 - All skills accept a trailing **language argument** (`en` default, e.g. `pt-BR`, `es`); the output (commit message / review body / PR description / handoff / explain / guide / verify report) must be written in that language while the skill's own status report can follow suit.
 
+## Diff capture rule (token hygiene)
+
+Whenever a skill needs to read a git diff or log, **always capture it directly to `./tmp/diff.txt` in a single chained command** and never run `git diff` or `git log` as a standalone invocation. Standalone invocations dump the entire diff into the conversation context, doubling token usage.
+
+The mandatory pattern — adapt flags as needed, but never split it:
+
+```bash
+# for git log (code-review, handoff, pull-request, explain, verify):
+mkdir -p ./tmp && git log --patch [--graph|--reverse] <branch>.. > ./tmp/diff.txt && echo "Diff saved successfully"
+
+# for git diff (commit):
+git add . && mkdir -p ./tmp && git diff --cached > ./tmp/diff.txt && echo "Diff saved successfully"
+```
+
+The trailing `echo` is required: it confirms the redirect succeeded and gives the model visible feedback without printing the diff itself. After saving, use `Read` on `./tmp/diff.txt` to analyze the changes.
+
 ## When adding a new skill
 
 - Create `plugins/pair/skills/<name>/SKILL.md` with `disable-model-invocation: true` and a narrowly-scoped `allowed-tools` list.
