@@ -19,6 +19,8 @@ Generate a Conventional Commits message from the currently staged changes (auto-
 
 1. **Resolve language.** If `$1` is empty, use `en`. Otherwise use `$1` verbatim.
 
+   > **Language lock:** the commit subject and the report-back message must be written in `$1`.
+
 2. **Get current branch name.**
 
    ```bash

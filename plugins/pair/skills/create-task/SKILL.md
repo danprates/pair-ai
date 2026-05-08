@@ -44,6 +44,9 @@ Can also **add tasks to an existing suite** by passing the suite folder as the f
 ### 1 — Resolve arguments and detect mode
 
 - `language = $2 || "en"`
+
+  > **Language lock:** every heading, label, sentence, placeholder, and the report-back message must be written in `$2`. The template defines layout only — translate all its text to `$2`.
+
 - Check if `$1` is an existing directory under `./tmp/tasks/` using `Glob`:
   - **Yes → ADD mode.** `suite_dir = $1`. Ask the user: *"What do you want to add to this suite?"* and wait for the answer as `input`.
   - **No → CREATE mode.** Attempt `Read` on `$1` as a file path. If the file exists, use its contents as `input`. Otherwise treat `$1` literally as `input`.

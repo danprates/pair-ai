@@ -20,7 +20,7 @@ Produce a code review of everything on the current branch that is not on the bas
 
 1. **Resolve arguments.** `branch = $1 || dev`, `language = $2 || en`.
 
-   > **Language lock:** every heading, label, sentence, placeholder, and the report-back message must be written in `$2`. The template defines layout only — translate all its text to `$2`.
+   > **Language lock:** every heading, label, sentence, placeholder, and the report-back message must be written in `$2`. The template defines layout only — translate all its text to `$2`. Code identifiers and comment text inside diff blocks remain in the file's language.
 
 2. **Capture and save the diff.**
 
