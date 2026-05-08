@@ -28,11 +28,13 @@ This skill is distinct from `code-review`: `code-review` asks "is this code well
 
    > **Language lock:** every heading, label, sentence, placeholder, and the report-back message must be written in `$4`. The template defines layout only — translate all its text to `$4`. Code identifiers and comment text inside diff blocks remain in the file's language.
 
-2. **Capture and save the diff.**
+2. **Capture and save the diff — run this as the very first tool call, before anything else.**
 
    ```bash
-   mkdir -p ./tmp && git log --patch <branch>.. > ./tmp/diff.txt
+   mkdir -p ./tmp && git log --patch <branch>.. > ./tmp/diff.txt && echo "Diff saved successfully"
    ```
+
+   > **IMPORTANT:** This command is mandatory and must execute before any analysis begins. Run it as a single `&&` chain. Never invoke `git log` without the `> ./tmp/diff.txt` redirect — a standalone `git log` dumps the entire diff into the conversation, doubling token usage.
 
    Then read `./tmp/diff.txt` to understand what was actually implemented.
 
