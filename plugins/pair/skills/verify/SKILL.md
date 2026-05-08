@@ -26,6 +26,8 @@ This skill is distinct from `code-review`: `code-review` asks "is this code well
 
 1. **Resolve arguments.** `branch = $1 || dev`, `task_doc = $2` (empty = not provided), `test_cmd = $3` (empty = not provided), `language = $4 || en`.
 
+   > **Language lock:** every heading, label, sentence, placeholder, and the report-back message must be written in `$4`. The template defines layout only — translate all its text to `$4`.
+
 2. **Capture and save the diff.**
 
    ```bash

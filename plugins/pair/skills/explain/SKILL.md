@@ -20,6 +20,8 @@ Narrate the implementation story of the current branch commit by commit, in chro
 
 1. **Resolve arguments.** `branch = $1 || dev`, `language = $2 || en`.
 
+   > **Language lock:** every heading, label, sentence, placeholder, and the report-back message must be written in `$2`. The template defines layout only — translate all its text to `$2`. Code identifiers and comment text inside diff blocks remain in the file's language.
+
 2. **Capture and save the diff in chronological order.**
 
    ```bash

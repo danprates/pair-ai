@@ -22,6 +22,8 @@ Generate an implementation guide that reads like a senior developer pairing with
 
 1. **Resolve arguments.** `input = $1` (required — abort with a usage message if empty), `language = $2 || en`.
 
+   > **Language lock:** every heading, label, sentence, placeholder, and the report-back message must be written in `$2`. The template defines layout only — translate all its text to `$2`. File paths and code identifiers always remain in their original form.
+
 2. **Read the feature specification.**
    - Attempt `Read` on `$1` as a file path.
    - If the file exists, use its contents as the feature spec.

@@ -20,6 +20,8 @@ Generate a handoff document based on the diff between the current branch and a b
 
 1. **Resolve arguments.** `branch = $1 || dev`, `language = $2 || en`.
 
+   > **Language lock:** every heading, label, sentence, placeholder, and the report-back message must be written in `$2`. The template defines layout only — translate all its text to `$2`.
+
 2. **Capture and save the diff.**
 
    ```bash
