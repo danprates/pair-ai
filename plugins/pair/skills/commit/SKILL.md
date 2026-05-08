@@ -21,27 +21,29 @@ Generate a Conventional Commits message from the currently staged changes (auto-
 
    > **Language lock:** the commit subject and the report-back message must be written in `$1`.
 
-2. **Get current branch name.**
+2. **Stage and save the diff — run this as the very first tool call, before anything else.**
+
+   ```bash
+   git add . && mkdir -p ./tmp && git diff --cached > ./tmp/diff.txt && echo "Diff saved successfully"
+   ```
+
+   > **IMPORTANT:** This command is mandatory and must execute before any analysis begins. Run it as a single `&&` chain. Never invoke `git diff` without the `> ./tmp/diff.txt` redirect — a standalone `git diff` dumps the entire diff into the conversation, doubling token usage.
+
+   Then read `./tmp/diff.txt` to analyze the changes.
+
+3. **Get current branch name.**
 
    ```bash
    git rev-parse --abbrev-ref HEAD
    ```
 
-3. **Extract ticket id from the branch name** to use as commit scope. Try these regex patterns in order, stop at the first match:
+4. **Extract ticket id from the branch name** to use as commit scope. Try these regex patterns in order, stop at the first match:
    1. Jira-style: `[A-Z][A-Z0-9]+-\d+` — e.g. `JIRA-1234`, `PROJ-567`, `ABC123-45`. Uppercase prefix is required.
    2. Azure DevOps with prefix: `AB#\d+` or `#\d+` — e.g. `AB#1234`, `#567`.
    3. Azure DevOps bare number: the segment right after a type prefix that is pure digits — e.g. `feat/1234-desc` → `1234`.
    4. No match → no scope.
 
    If a ticket is extracted, use it **verbatim** as the scope. Never invent or normalize a scope that was not present in the branch.
-
-4. **Stage and save the diff.**
-
-   ```bash
-   git add . && mkdir -p ./tmp && git diff --cached > ./tmp/diff.txt
-   ```
-
-   Then read `./tmp/diff.txt` to analyze the changes.
 
 5. **Check for project commit conventions.**
 
@@ -52,7 +54,7 @@ Generate a Conventional Commits message from the currently staged changes (auto-
    If project conventions were found in step 5, follow them. Otherwise apply these defaults:
    - **Format:** `type(scope): subject` if a ticket was extracted, otherwise `type: subject`.
    - **Type** (Conventional Commits): one of `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
-   - **Scope:** only when extracted in step 3, verbatim (e.g. `JIRA-1234`).
+   - **Scope:** only when extracted in step 4, verbatim (e.g. `JIRA-1234`).
    - **Subject:**
      - Imperative mood ("add", not "added" / "adds").
      - Starts with a lowercase letter.
