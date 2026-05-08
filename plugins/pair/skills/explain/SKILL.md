@@ -2,7 +2,6 @@
 name: explain
 description: Narrate the implementation journey of the current branch — what was done, in which order, and why each decision was made
 disable-model-invocation: true
-context: fork
 model: claude-sonnet-4-6
 allowed-tools: Bash(git log:*), Bash(mkdir:*), Write, Read, Glob
 ---

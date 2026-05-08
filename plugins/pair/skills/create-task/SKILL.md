@@ -2,7 +2,6 @@
 name: create-task
 description: Create a suite of parallel, independent task documents — one orchestrator, N implementation tasks, and one validation task — designed to be executed by Claude Code sub-agents. Can also add tasks to an existing suite.
 disable-model-invocation: true
-context: fork
 model: claude-opus-4-7
 allowed-tools: Bash(mkdir:*), Bash(grep:*), Bash(ls:*), Glob, Read, Write
 ---

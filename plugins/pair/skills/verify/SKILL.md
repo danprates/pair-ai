@@ -2,7 +2,6 @@
 name: verify
 description: Adversarial verification of the current branch against a task spec — checks whether the implementation matches the requirements, runs a quality-gate command, and reports gaps with numbered issues explaining what is wrong, why it matters, and how to fix it
 disable-model-invocation: true
-context: fork
 model: claude-opus-4-7
 allowed-tools: Bash(git log:*), Bash(mkdir:*), Bash(bash:*), Bash(sh:*), Bash(grep:*), Glob, Read, Write
 ---

@@ -2,7 +2,6 @@
 name: handoff
 description: Generate a cross-area handoff document from the diff between two branches — what was done, scenarios covered, and how to integrate and implement
 disable-model-invocation: true
-context: fork
 model: claude-sonnet-4-6
 allowed-tools: Bash(git log:*), Bash(mkdir:*), Write, Read, Glob
 ---
