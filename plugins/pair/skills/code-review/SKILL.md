@@ -1,9 +1,9 @@
 ---
 name: code-review
-description: Review the diff between current branch and a base branch, saving a numbered report
+description: Review the diff between current branch and a base branch (or a GitHub/Azure DevOps Pull Request URL), saving a numbered report
 disable-model-invocation: true
 model: claude-opus-4-7
-allowed-tools: Bash(git log:*), Bash(mkdir:*), Write, Read
+allowed-tools: Bash(git log:*), Bash(gh pr diff:*), Bash(az repos pr diff:*), Bash(mkdir:*), Write, Read
 ---
 
 # code-review
@@ -12,19 +12,42 @@ Produce a code review of everything on the current branch that is not on the bas
 
 ## Arguments
 
-- `$1` — base branch to compare against (default: `dev`). Examples: `dev`, `main`, `origin/main`.
+- `$1` — base branch OR Pull Request URL (default: `dev`).
+  - Branch: `dev`, `main`, `origin/main`
+  - GitHub PR URL: `https://github.com/owner/repo/pull/123`
+  - Azure DevOps PR URL: `https://dev.azure.com/org/project/_git/repo/pullrequest/123`
 - `$2` — output language (default: `en`). Examples: `en`, `pt-BR`.
 
 ## Flow
 
-1. **Resolve arguments.** `branch = $1 || dev`, `language = $2 || en`.
+1. **Resolve arguments.** `input = $1 || dev`, `language = $2 || en`.
+
+   Detect the input type by inspecting `$1`:
+   - Starts with `https://github.com/` → **GitHub PR**
+   - Starts with `https://dev.azure.com/` → **Azure DevOps PR**
+   - Anything else → **branch name** (current behavior)
 
    > **Language lock:** every heading, label, sentence, placeholder, and the report-back message must be written in `$2`. The template defines layout only — translate all its text to `$2`. Code identifiers and comment text inside diff blocks remain in the file's language.
 
 2. **Capture and save the diff — run this as the very first tool call, before anything else.**
 
+   Choose the command based on the input type detected in step 1:
+
+   **Branch (default):**
    ```bash
-   mkdir -p ./tmp && git log --patch --graph <branch>.. > ./tmp/diff.txt && echo "Diff saved successfully"
+   mkdir -p ./tmp && git log --patch --graph <input>.. > ./tmp/diff.txt && echo "Diff saved successfully"
+   ```
+
+   **GitHub PR URL:**
+   ```bash
+   mkdir -p ./tmp && gh pr diff <input> > ./tmp/diff.txt && echo "Diff saved successfully"
+   ```
+
+   **Azure DevOps PR URL:**
+
+   Extract the PR ID from the URL — it is the last numeric segment (e.g. `123` from `.../pullrequest/123`). Then:
+   ```bash
+   mkdir -p ./tmp && az repos pr diff --id <pr-id> > ./tmp/diff.txt && echo "Diff saved successfully"
    ```
 
    > **IMPORTANT:** This command is mandatory and must execute before any analysis begins. Run it as a single `&&` chain. Never invoke `git log` without the `> ./tmp/diff.txt` redirect — a standalone `git log` dumps the entire diff into the conversation, doubling token usage.
