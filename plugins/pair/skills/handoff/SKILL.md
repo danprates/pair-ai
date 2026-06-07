@@ -54,6 +54,8 @@ Generate a handoff document based on the diff between the current branch and a b
 
    Then read `./tmp/diff.txt` to analyze the changes.
 
+   > **Scope of analysis — PR URL mode:** When the input was a PR URL, `./tmp/diff.txt` is the **only** source of truth. Do **not** use `Read` or `Glob` to inspect files from the working tree — the local copy is on a different branch and will not reflect the PR state. `Read` is reserved for loading the template (step 3) only. Every statement in the document must be grounded in what the diff shows, not in what the local codebase contains.
+
 3. **Resolve the handoff template** in this order (stop at the first found):
    1. `./tmp/templates/handoff.md` — user project override
    2. `${CLAUDE_PLUGIN_ROOT}/skills/handoff/template.md` — plugin default

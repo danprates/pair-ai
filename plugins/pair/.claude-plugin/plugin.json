@@ -1,6 +1,6 @@
 {
   "name": "pair",
-  "version": "2.9.0",
+  "version": "2.9.1",
   "description": "Commit, code-review, pull-request, handoff, explain, guide, verify, and create-task skills",
   "author": {
     "name": "Daniel Prates"

@@ -54,6 +54,8 @@ Produce a code review of everything on the current branch that is not on the bas
 
    Then read `./tmp/diff.txt` to analyze the changes.
 
+   > **Scope of analysis — PR URL mode:** When the input was a PR URL, `./tmp/diff.txt` is the **only** source of truth. Do **not** use `Read` to inspect files from the working tree — the local copy is on a different branch and will not reflect the PR state. `Read` is reserved for loading the template (step 3) only. Every finding must be grounded in what the diff shows, not in what the local codebase contains.
+
 3. **Resolve the review template** in this order (stop at the first found):
    1. `./tmp/templates/code-review.md` — user project override
    2. `${CLAUDE_PLUGIN_ROOT}/skills/code-review/template.md` — plugin default
