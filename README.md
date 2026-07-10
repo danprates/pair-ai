@@ -26,7 +26,7 @@ Writing a commit message, self-reviewing before you open a PR, explaining a chan
 - **Handoff** — "What changes on your end?" Writes a knowledge-transfer document aimed at frontend developers and QA — what was done, which scenarios are covered, how to integrate, and how to validate.
 - **Explain** — "Why these decisions?" Narrates the implementation story of your branch in chronological order, with annotated diff blocks showing what changed and why. Useful before a review or when onboarding a peer to a non-trivial change.
 - **Guide** — "Where do I even start?" Generates a step-by-step implementation guide for a feature: which files to create or modify, why each change is needed, and how to verify each step. Grounds every recommendation in the actual codebase so advice is specific, not generic.
-- **Verify** — "Does this actually do what was asked?" Adversarial check that your implementation matches a task spec and that a quality gate passes. Reports gaps as numbered issues — each one explains what is wrong, why it matters in production, where exactly in the code the problem lives, and how to fix it.
+- **Verify** — "Is this actually safe to merge?" Zero-trust adversarial check: runs targeted tests against the diff (happy path plus attacker-minded edge cases), refuses to trust claims made by commits/comments/task docs, runs a quality gate, and hunts for security holes. Every issue gets a severity, and nothing CRITICAL or HIGH is allowed to pass.
 - **Impact analysis** — "What else does this change touch, and can I trust it?" Adversarial, zero-trust pre-push check: impacted routes (with `curl` commands), API contract before/after, database objects with SQL before/after, in-code consumers (flagging plausible silent bugs), downstream effects of data-shape changes, and a dedicated pass for data leaks and malicious patterns. Every finding is severity-scored.
 - **Create task** — "What exactly needs to be done?" Breaks a feature into a suite of independent, parallel task documents designed to be executed by Claude Code sub-agents. Creates an orchestrator that runs up to 5 tasks at a time, independent implementation tasks that can execute in any order, and a validation task that runs last.
 
@@ -149,12 +149,16 @@ Output is saved to `./tmp/guide.md`.
 
 ### `/pair:verify [base-branch] [task-doc] [test-command] [language]`
 
-Verifies whether the implementation on the current branch matches a task spec and passes a quality gate. This is an **adversarial** review — its job is to find gaps, not to confirm that the work is done. The output is a numbered issue report with a PASS / PARTIAL / FAIL verdict, saved to `./tmp/verify.md`.
+The last gate before merge. This is a **zero-trust adversarial** review — nothing is accepted because a comment, commit message, or task doc claims it works. `verify` designs and runs concrete checks against the diff itself (happy path and attacker-minded edge cases), runs your quality-gate command, and reports every gap or anomaly with a severity. If a CRITICAL or HIGH issue is found, the verdict says plainly that the branch must not be merged.
+
+- **Targeted verification tests** — for every new or changed behavior in the diff, at least one concrete check is designed and, whenever feasible, actually executed (a script, a direct call, a `curl` request) rather than reasoned about abstractly. Coverage includes boundary values (empty/null/zero/max), type confusion, unicode/long-string input, and concurrency/idempotency — not just the happy path. Anything that could not be executed is listed as explicit manual instructions and marked UNVERIFIED, never assumed to pass.
+- **Security & edge-case pass** — a dedicated, always-on check of every externally reachable changed path for injection, broken auth/authorization (including IDOR), input-validation gaps, resource-exhaustion shape, race conditions, and information disclosure. Findings land in the report as first-class numbered issues.
+- **Severity on everything** — every issue, from a missing requirement to a security finding, carries `[CRITICAL]`/`[HIGH]`/`[MEDIUM]`/`[LOW]`. PASS requires zero CRITICAL/HIGH issues, full stop — a passing quality gate alone is not enough.
 
 | Argument       | Default | Description                                                                                                                                                            |
 | -------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `base-branch`  | `dev`   | Branch to diff against                                                                                                                                                 |
-| `task-doc`     | —       | Path to a spec document (PRD, task file, plain text). Without one, commit messages become the spec.                                                                    |
+| `task-doc`     | —       | Path to a spec document (PRD, task file, plain text). Without one, commit messages become the spec — treated with the same zero trust as the rest of the diff.        |
 | `test-command` | —       | Quality-gate command to run (e.g. `npm test`). If omitted, a [CRITICAL] issue is added automatically — no gate means the implementation cannot be considered verified. |
 | `language`     | `en`    | Output language                                                                                                                                                        |
 
@@ -166,7 +170,7 @@ Verifies whether the implementation on the current branch matches a task spec an
 /pair:verify main ./docs/tasks/my-task.md "npm test" pt-BR
 ```
 
-Every issue in the report includes four parts: what is wrong, why it matters in production, where in the code the problem lives (with an annotated diff block and inline comments explaining the specific line), and how to fix it — written so a junior developer can act on it without follow-up questions.
+Every issue in the report includes four parts: what is wrong, why it matters in production (or what an attacker could achieve, for security findings), where in the code the problem lives (with an annotated diff block and inline comments explaining the specific line), and how to fix it — written so a junior developer can act on it without follow-up questions.
 
 **Template resolution order** (first match wins):
 

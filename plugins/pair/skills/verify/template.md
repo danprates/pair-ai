@@ -2,11 +2,15 @@
 
 **Verdict:** [PASS | PARTIAL | FAIL]
 
+**Severity totals:** <N> CRITICAL · <N> HIGH · <N> MEDIUM · <N> LOW
+
+> If the verdict is not PASS, **this branch must not be merged** until every CRITICAL/HIGH issue below is resolved.
+
 ---
 
 ## Specification
 
-**Source:** `<task_doc path>` | _Self-consistency mode — no task document provided; commit messages used as spec._
+**Source:** `<task_doc path>` | _Self-consistency mode — no task document provided; commit messages used as spec (treated with zero trust, not accepted at face value)._
 
 (Exhaustive list of every requirement and acceptance criterion extracted from the source. One item per line. Every claim that appears in the spec must appear here — this list is the baseline for the gap analysis.)
 
@@ -22,7 +26,7 @@
 
 ---
 
-## Test Results
+## Quality Gate
 
 **Command:** `<test command>` | _No quality-gate command provided — see Issues._
 
@@ -34,9 +38,21 @@
 
 ---
 
+## Targeted Verification Tests
+
+(Every check designed and run against the diff in the zero-trust verification pass — independent of the quality-gate command above. If a check could not be executed, it is listed with explicit manual instructions instead of being skipped.)
+
+| # | Behavior under test | Check | Result |
+| --- | --- | --- | --- |
+| 1 | `<changed function/route>` — happy path | `<command actually run, e.g. curl ... or a script>` | ✅ Confirmed — `<real output summary>` |
+| 2 | `<changed function/route>` — boundary value `<e.g. empty array>` | `<command run>` | ✅ Confirmed / ❌ Failed — `<real output summary>` |
+| 3 | `<changed function/route>` — concurrent/idempotency case | `<command run>` | ⚠️ UNVERIFIED — could not execute in this environment; manual steps: `<exact steps for the developer>` |
+
+---
+
 ## Issues
 
-(If no issues: > No gaps found — implementation matches specification.)
+(If no issues: > No gaps found — implementation matches specification, targeted verification tests pass, and no security or edge-case concerns were found.)
 
 **Missing Requirements**
 
@@ -122,12 +138,35 @@
 
 ---
 
+**Security & Edge Cases**
+
+**5. [CRITICAL] <title>**
+
+**Why this matters:** <what an attacker could actually achieve, or what breaks under the edge-case input — be concrete: data exposed, auth bypassed, integrity violated, service degraded>
+
+**Where in the code:**
+
+```diff
+--- a/src/path/to/file.ts
++++ b/src/path/to/file.ts
+@@ -X,Y +X,Y @@
+ context line
+-// ⚠️ Attack/edge case: <e.g. "user-controlled id used without an ownership check — IDOR">
+-  vulnerable code
+```
+
+**How to fix:** <concrete suggestion — validation to add, check to add, library to use>
+
+---
+
 ## Format rules (must be preserved in any override)
 
 - Issues are numbered **globally** starting at 1, never reset per category.
 - Each issue has four mandatory parts: **title with severity**, **Why this matters**, **Where in the code** (diff block with inline comments), **How to fix**.
 - Comment lines in diff blocks use the file's language syntax (`//` JS/TS/Go, `#` Python/Ruby/Shell/YAML, `--` SQL). They must explain *why* the line is wrong — not what it does.
-- Category headings (Missing Requirements, Behavioral Deviations, Scope Creep, Test Failures) are bold; numbering stays continuous across categories.
+- Category headings (Missing Requirements, Behavioral Deviations, Scope Creep, Test Failures, Security & Edge Cases) are bold; numbering stays continuous across categories.
+- The Targeted Verification Tests table is never omitted — every check from the zero-trust pass is listed with its real result or explicit manual instructions; nothing is marked confirmed without evidence.
+- Verdict rule: PASS requires zero CRITICAL/HIGH issues; the report must say plainly when a non-PASS verdict means the branch must not be merged.
 - Output is markdown, in the requested language.
 
 ---
@@ -135,8 +174,8 @@
 ## Acceptance Criteria Status
 
 | #   | Criterion               | Status     |
-| --- | ----------------------- | ---------- |
+| --- | ------------------------ | ---------- |
 | 1   | (requirement from spec) | ✅ DONE    |
 | 2   | (requirement from spec) | ⚠️ PARTIAL |
 | 3   | (requirement from spec) | ❌ MISSING |
-| 4   | (requirement from spec) | ❓ UNCLEAR |
+| 4   | (requirement from spec) | ❓ UNCLEAR / UNVERIFIED |
