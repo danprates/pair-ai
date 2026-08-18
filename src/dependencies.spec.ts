@@ -3,7 +3,11 @@ import { rm, writeFile } from "fs/promises";
 import { useDependencies } from "./dependencies";
 
 describe("File functions", () => {
-  const { readFile, replaceKey } = useDependencies();
+  const { readFile, replaceKey } = useDependencies({
+    MODEL: "claude/sonnet",
+    LANGUAGE: "en",
+    COMMIT_LANGUAGE: "en",
+  });
 
   beforeEach(async () => {
     await writeFile(

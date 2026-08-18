@@ -22,7 +22,15 @@ export const useCodeReview: UseAction =
 
 export const useCommit: UseAction =
   (
-    { getDiff, log, ask, readFile, replaceKeys, commit }: Dependencies,
+    {
+      getDiff,
+      getRecentCommits,
+      log,
+      ask,
+      readFile,
+      replaceKeys,
+      commit,
+    }: Dependencies,
     config: Config
   ) =>
   async (...args: string[]) => {
@@ -33,10 +41,11 @@ export const useCommit: UseAction =
       return;
     }
 
+    const recentCommits = await getRecentCommits();
     const path = __dirname + "/prompts/commit.prompt.xml";
     const file = await readFile(path);
     const language = config.COMMIT_LANGUAGE;
-    const prompt = replaceKeys(file, { content, language });
+    const prompt = replaceKeys(file, { content, language, recentCommits });
 
     const message = await ask(prompt);
 

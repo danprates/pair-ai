@@ -24,6 +24,7 @@ export type Dependencies = {
   getDiff: () => Promise<string>;
   commit: (message: string) => Promise<void>;
   getLogs: (branch: string) => Promise<string>;
+  getRecentCommits: () => Promise<string>;
   ask: Ask;
 };
 

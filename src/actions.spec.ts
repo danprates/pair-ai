@@ -20,6 +20,7 @@ describe("CommitAction", () => {
       getLogs: mock<(branch: string) => Promise<string>>(() =>
         Promise.resolve("")
       ),
+      getRecentCommits: mock<() => Promise<string>>(() => Promise.resolve("")),
       ask: mock<(prompt: string) => Promise<string>>(() => Promise.resolve("")),
     });
     const dependencies = useDependencies();

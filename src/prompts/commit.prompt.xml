@@ -12,7 +12,9 @@
     <instruction>Never use the scope of the commit message</instruction>
     <instruction>Subject must not be sentence-case, start-case, pascal-case, upper-case</instruction>
     <instruction>Always start the subject with a lowercase letter</instruction>
+    <instruction>If recent_commits follows a team-specific pattern (e.g. a ticket id prefix like "TICKET-123: message"), replicate that pattern instead of plain Conventional Commits</instruction>
     <instruction>Only returns the commit message, nothing else</instruction>
   </instructions>
+  <recent_commits>{{ recentCommits }}</recent_commits>
   <diff>{{ content }}</diff>
 </prompt>

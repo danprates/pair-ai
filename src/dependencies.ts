@@ -41,6 +41,15 @@ const getLogs = async (branch: string): Promise<string> => {
   return stdout.toString().trim();
 };
 
+const getRecentCommits = async (): Promise<string> => {
+  try {
+    const { stdout } = await $`git log -5 --pretty=format:%s`.quiet();
+    return stdout.toString().trim();
+  } catch {
+    return "";
+  }
+};
+
 export const useDependencies: UseDependencies = (config: Config) => ({
   readFile,
   saveFile,
@@ -50,5 +59,6 @@ export const useDependencies: UseDependencies = (config: Config) => ({
   getDiff,
   commit,
   getLogs,
+  getRecentCommits,
   ask: useModel(config),
 });
