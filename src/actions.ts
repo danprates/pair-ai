@@ -1,3 +1,4 @@
+import { parseArgs } from "./args";
 import type { Config, Dependencies, UseAction } from "./types";
 
 export const useCodeReview: UseAction =
@@ -14,24 +15,15 @@ export const useCodeReview: UseAction =
     config: Config
   ) =>
   async (...args: string[]) => {
-    const severityIndex = args.indexOf("--severity");
-    const severity =
-      (severityIndex !== -1 ? args[severityIndex + 1] : undefined) || "low";
-    const rest =
-      severityIndex === -1
-        ? args
-        : [
-            ...args.slice(0, severityIndex),
-            ...args.slice(severityIndex + 2),
-          ];
+    const { link, branch, lang, severity = "low" } = parseArgs(args);
 
-    const isLink = rest[0] === "--link";
+    const isLink = link !== undefined;
 
     log(isLink ? "Fetching pull request diff..." : "Fetching commit logs...");
     const content = isLink
-      ? await getPullRequestDiff(rest[1])
-      : await getLogs(rest[0]);
-    const language = (isLink ? rest[2] : config.LANGUAGE) || config.LANGUAGE;
+      ? await getPullRequestDiff(link)
+      : await getLogs(branch);
+    const language = (isLink ? lang : config.LANGUAGE) || config.LANGUAGE;
 
     const path = __dirname + "/prompts/code-review.prompt.xml";
     const file = await readFile(path);
@@ -92,7 +84,7 @@ export const usePullRequest: UseAction =
     config: Config
   ) =>
   async (...args: string[]) => {
-    const [branch] = args;
+    const { branch } = parseArgs(args);
 
     log("Fetching commit logs...");
     const content = await getLogs(branch);

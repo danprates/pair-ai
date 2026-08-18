@@ -47,8 +47,9 @@ pair commit
 ## Commands
 
 - `pair commit`: Commits changes using the Conventional Commits standard.
-- `pair code-review {branch}`: Analyzes the code in the specified branch and suggests improvements.
-- `pair pull-request {branch}`: Creates a pull request description based on the changes in the specified branch.
+- `pair code-review --branch <branch>`: Analyzes the code in the specified branch and suggests improvements.
+- `pair code-review --link <url> [--lang <language>] [--severity <level>]`: Analyzes a pull request diff from a link.
+- `pair pull-request --branch <branch>`: Creates a pull request description based on the changes in the specified branch.
 
 ## Scripts
 
