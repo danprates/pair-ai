@@ -16,6 +16,7 @@ export const useCodeReview: UseAction =
   async (...args: string[]) => {
     const isLink = args[0] === "--link";
 
+    log(isLink ? "Fetching pull request diff..." : "Fetching commit logs...");
     const content = isLink
       ? await getPullRequestDiff(args[1])
       : await getLogs(args[0]);
@@ -25,6 +26,7 @@ export const useCodeReview: UseAction =
     const file = await readFile(path);
     const prompt = replaceKeys(file, { content, language });
 
+    log("Asking the model for a code review, this may take a while...");
     const response = await ask(prompt);
 
     await saveFile("./tmp/code-review.md", response);
@@ -58,9 +60,11 @@ export const useCommit: UseAction =
     const language = config.COMMIT_LANGUAGE;
     const prompt = replaceKeys(file, { content, language, recentCommits });
 
+    log("Asking the model for a commit message, this may take a while...");
     const message = await ask(prompt);
 
     await commit(message);
+    log("Commit created successfully!");
   };
 
 export const usePullRequest: UseAction =
@@ -71,12 +75,14 @@ export const usePullRequest: UseAction =
   async (...args: string[]) => {
     const [branch] = args;
 
+    log("Fetching commit logs...");
     const content = await getLogs(branch);
     const path = __dirname + "/prompts/pull-request.prompt.xml";
     const file = await readFile(path);
     const language = config.LANGUAGE;
     const prompt = replaceKeys(file, { content, language });
 
+    log("Asking the model for a pull request description, this may take a while...");
     const response = await ask(prompt);
 
     await saveFile("./tmp/pull-request.md", response);
