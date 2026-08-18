@@ -15,6 +15,7 @@ export type Config = {
   COMMIT_LANGUAGE: string;
   SOURCE_CONTROL: string;
   PULL_REQUEST_TEMPLATE: string;
+  CODE_REVIEW_RULES: string;
 };
 
 export type Dependencies = {

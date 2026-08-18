@@ -9,6 +9,7 @@ describe("File functions", () => {
     COMMIT_LANGUAGE: "en",
     SOURCE_CONTROL: "github",
     PULL_REQUEST_TEMPLATE: "",
+    CODE_REVIEW_RULES: "",
   });
 
   beforeEach(async () => {

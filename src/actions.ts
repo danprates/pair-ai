@@ -24,7 +24,10 @@ export const useCodeReview: UseAction =
 
     const path = __dirname + "/prompts/code-review.prompt.xml";
     const file = await readFile(path);
-    const prompt = replaceKeys(file, { content, language });
+    const customRules = config.CODE_REVIEW_RULES
+      ? await readFile(config.CODE_REVIEW_RULES)
+      : "";
+    const prompt = replaceKeys(file, { content, language, customRules });
 
     log("Asking the model for a code review, this may take a while...");
     const response = await ask(prompt);

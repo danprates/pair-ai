@@ -6,6 +6,7 @@
     <instruction>Return the content in markdown</instruction>
     <instruction>Use simple, clear, objective, and concise language</instruction>
     <instruction>Use the reference-source as the basis of what should be evaluated</instruction>
+    <instruction>If custom-rules is not empty, also evaluate it in addition to reference-source, treating it as project-specific rules</instruction>
     <instruction>Provide detailed feedback only on points that WERE NOT ACHIEVED</instruction>
     <instruction>Suggest specific improvements when applicable</instruction>
     <instruction>If there are no points of attention, answer only with the text "No points of attention in the code"</instruction>
@@ -81,6 +82,8 @@
       <item>Are efficient network protocols chosen, such as HTTP/2 instead of HTTP/1.1 where applicable?</item>
     </performance-items>
   </reference-source>
+
+  <custom-rules>{{ customRules }}</custom-rules>
 
   <example-response>
     There are some points of attention in the code:
