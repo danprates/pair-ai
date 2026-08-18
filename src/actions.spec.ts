@@ -1,6 +1,13 @@
 import { describe, expect, it, mock } from "bun:test";
 import { useCommit } from "./actions";
-import type { UseDependencies } from "./types";
+import type { Config, UseDependencies } from "./types";
+
+const config: Config = {
+  MODEL: "claude/sonnet",
+  LANGUAGE: "en",
+  COMMIT_LANGUAGE: "en",
+  SOURCE_CONTROL: "github",
+};
 
 describe("CommitAction", () => {
   it("should return error message when there is no diff to commit", () => {
@@ -29,8 +36,8 @@ describe("CommitAction", () => {
       ),
       ask: mock<(prompt: string) => Promise<string>>(() => Promise.resolve("")),
     });
-    const dependencies = useDependencies();
-    const commit = useCommit(dependencies);
+    const dependencies = useDependencies(config);
+    const commit = useCommit(dependencies, config);
     expect(commit()).resolves.toBeUndefined();
     expect(dependencies.log).toHaveBeenCalledWith(
       "There are no changes to commit.",
