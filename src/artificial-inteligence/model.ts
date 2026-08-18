@@ -1,5 +1,6 @@
 import type { Ask, Config } from "../types";
 import { useGemini } from "./gemini";
+import { useLlamaServer } from "./llamaserver";
 import { useOllama } from "./ollama";
 import { useOpenRouter } from "./open-router";
 import { useOpenAI } from "./openai";
@@ -16,6 +17,8 @@ export const useModel = (config: Config): Ask => {
       return useOpenRouter(process.env.OPENROUTER_API_KEY || "", model);
     case "ollama":
       return useOllama(model);
+    case "llamaserver":
+      return useLlamaServer(model);
     default:
       throw new Error(`Unknown model provider: ${provider}`);
   }
