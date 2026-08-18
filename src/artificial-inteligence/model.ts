@@ -1,4 +1,5 @@
 import type { Ask, Config } from "../types";
+import { useClaudeCode } from "./claude-code";
 import { useGemini } from "./gemini";
 import { useLlamaServer } from "./llamaserver";
 import { useOllama } from "./ollama";
@@ -19,6 +20,8 @@ export const useModel = (config: Config): Ask => {
       return useOllama(model);
     case "llamaserver":
       return useLlamaServer(model);
+    case "claude":
+      return useClaudeCode(model);
     default:
       throw new Error(`Unknown model provider: ${provider}`);
   }
