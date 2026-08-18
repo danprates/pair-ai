@@ -80,7 +80,11 @@ export const usePullRequest: UseAction =
     const path = __dirname + "/prompts/pull-request.prompt.xml";
     const file = await readFile(path);
     const language = config.LANGUAGE;
-    const prompt = replaceKeys(file, { content, language });
+    const templatePath =
+      config.PULL_REQUEST_TEMPLATE ||
+      __dirname + "/templates/pull-request.md";
+    const template = await readFile(templatePath);
+    const prompt = replaceKeys(file, { content, language, template });
 
     log("Asking the model for a pull request description, this may take a while...");
     const response = await ask(prompt);

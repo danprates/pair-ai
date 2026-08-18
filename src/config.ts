@@ -5,6 +5,7 @@ const defaultConfig: Config = {
   LANGUAGE: "en",
   COMMIT_LANGUAGE: "en",
   SOURCE_CONTROL: "github",
+  PULL_REQUEST_TEMPLATE: "",
 };
 
 export const useConfig = async (): Promise<Config> => {

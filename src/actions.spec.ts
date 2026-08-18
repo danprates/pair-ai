@@ -7,6 +7,7 @@ const config: Config = {
   LANGUAGE: "en",
   COMMIT_LANGUAGE: "en",
   SOURCE_CONTROL: "github",
+  PULL_REQUEST_TEMPLATE: "",
 };
 
 describe("CommitAction", () => {
