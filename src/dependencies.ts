@@ -1,5 +1,6 @@
 import { $ } from "bun";
 import { useModel } from "./artificial-inteligence/model";
+import { usePullRequestDiff } from "./source-control/provider";
 import type { Config, UseDependencies } from "./types";
 
 const readFile = async (file: string): Promise<string> => {
@@ -60,5 +61,6 @@ export const useDependencies: UseDependencies = (config: Config) => ({
   commit,
   getLogs,
   getRecentCommits,
+  getPullRequestDiff: usePullRequestDiff(config),
   ask: useModel(config),
 });

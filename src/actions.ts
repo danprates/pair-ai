@@ -2,16 +2,27 @@ import type { Config, Dependencies, UseAction } from "./types";
 
 export const useCodeReview: UseAction =
   (
-    { getLogs, readFile, replaceKeys, ask, saveFile, log }: Dependencies,
+    {
+      getLogs,
+      getPullRequestDiff,
+      readFile,
+      replaceKeys,
+      ask,
+      saveFile,
+      log,
+    }: Dependencies,
     config: Config
   ) =>
   async (...args: string[]) => {
-    const [branch] = args;
+    const isLink = args[0] === "--link";
 
-    const content = await getLogs(branch);
+    const content = isLink
+      ? await getPullRequestDiff(args[1])
+      : await getLogs(args[0]);
+    const language = (isLink ? args[2] : config.LANGUAGE) || config.LANGUAGE;
+
     const path = __dirname + "/prompts/code-review.prompt.xml";
     const file = await readFile(path);
-    const language = config.LANGUAGE;
     const prompt = replaceKeys(file, { content, language });
 
     const response = await ask(prompt);

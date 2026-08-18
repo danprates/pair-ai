@@ -4,6 +4,7 @@ const defaultConfig: Config = {
   MODEL: "gemini/gemini-2.0-flash",
   LANGUAGE: "en",
   COMMIT_LANGUAGE: "en",
+  SOURCE_CONTROL: "github",
 };
 
 export const useConfig = async (): Promise<Config> => {

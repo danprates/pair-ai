@@ -13,6 +13,7 @@ export type Config = {
   MODEL: string;
   LANGUAGE: string;
   COMMIT_LANGUAGE: string;
+  SOURCE_CONTROL: string;
 };
 
 export type Dependencies = {
@@ -25,6 +26,7 @@ export type Dependencies = {
   commit: (message: string) => Promise<void>;
   getLogs: (branch: string) => Promise<string>;
   getRecentCommits: () => Promise<string>;
+  getPullRequestDiff: (url: string) => Promise<string>;
   ask: Ask;
 };
 

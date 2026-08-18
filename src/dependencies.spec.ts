@@ -7,6 +7,7 @@ describe("File functions", () => {
     MODEL: "claude/sonnet",
     LANGUAGE: "en",
     COMMIT_LANGUAGE: "en",
+    SOURCE_CONTROL: "github",
   });
 
   beforeEach(async () => {
