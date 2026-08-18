@@ -1,7 +1,3 @@
-# Custom
-# Keep project skills versioned even if a global gitignore excludes .claude/
-!.claude/skills/
-
 # dependencies (bun install)
 node_modules
 
