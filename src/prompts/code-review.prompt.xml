@@ -9,7 +9,11 @@
     <instruction>If custom-rules is not empty, also evaluate it in addition to reference-source, treating it as project-specific rules</instruction>
     <instruction>Provide detailed feedback only on points that WERE NOT ACHIEVED</instruction>
     <instruction>Suggest specific improvements when applicable</instruction>
-    <instruction>If there are no points of attention, answer only with the text "No points of attention in the code"</instruction>
+    <instruction>Classify each point of attention with a severity: low, medium, high, or critical</instruction>
+    <instruction>Severity order, from lowest to highest, is: low, medium, high, critical</instruction>
+    <instruction>Only include points of attention with severity {{ severity }} or higher</instruction>
+    <instruction>Prefix each point of attention with its severity, in the format **[SEVERITY]**</instruction>
+    <instruction>If there are no points of attention at or above the {{ severity }} severity, answer only with the text "No points of attention in the code"</instruction>
     <instruction>Use the example-response as the output format</instruction>
   </instructions>
 
@@ -88,7 +92,7 @@
   <example-response>
     There are some points of attention in the code:
 
-    **Nomenclature:**
+    **[LOW] Nomenclature:**
     Variables with generic names
     The variables `e` and `c` are too generic and do not communicate the purpose of the code.
     I suggest renaming `e` to `exchange` and `c` to `chart` for better clarity.
@@ -101,7 +105,7 @@
     + const chart = new Chart(exchange);
     ```
 
-    **Functionality:**
+    **[HIGH] Functionality:**
     The code is not working correctly.
     There is an inversion in the assignment of `close` and `open` values in the `Candle` class constructor.
     The value passed to `close` is being assigned to `this.open`, and vice versa.

@@ -14,20 +14,36 @@ export const useCodeReview: UseAction =
     config: Config
   ) =>
   async (...args: string[]) => {
-    const isLink = args[0] === "--link";
+    const severityIndex = args.indexOf("--severity");
+    const severity =
+      (severityIndex !== -1 ? args[severityIndex + 1] : undefined) || "low";
+    const rest =
+      severityIndex === -1
+        ? args
+        : [
+            ...args.slice(0, severityIndex),
+            ...args.slice(severityIndex + 2),
+          ];
+
+    const isLink = rest[0] === "--link";
 
     log(isLink ? "Fetching pull request diff..." : "Fetching commit logs...");
     const content = isLink
-      ? await getPullRequestDiff(args[1])
-      : await getLogs(args[0]);
-    const language = (isLink ? args[2] : config.LANGUAGE) || config.LANGUAGE;
+      ? await getPullRequestDiff(rest[1])
+      : await getLogs(rest[0]);
+    const language = (isLink ? rest[2] : config.LANGUAGE) || config.LANGUAGE;
 
     const path = __dirname + "/prompts/code-review.prompt.xml";
     const file = await readFile(path);
     const customRules = config.CODE_REVIEW_RULES
       ? await readFile(config.CODE_REVIEW_RULES)
       : "";
-    const prompt = replaceKeys(file, { content, language, customRules });
+    const prompt = replaceKeys(file, {
+      content,
+      language,
+      customRules,
+      severity,
+    });
 
     log("Asking the model for a code review, this may take a while...");
     const response = await ask(prompt);
