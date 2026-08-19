@@ -1,5 +1,5 @@
 import type { AskResult } from "../types";
-import { formatCost, NOT_INFORMED_COST } from "./cost";
+import { NOT_INFORMED_COST, usdToCents } from "./cost";
 
 type OpenRouterResponse = {
   choices: {
@@ -44,7 +44,7 @@ export const useOpenRouter =
       tokens: data.usage?.total_tokens ?? null,
       cost:
         data.usage?.cost !== undefined
-          ? formatCost(data.usage.cost)
+          ? usdToCents(data.usage.cost)
           : NOT_INFORMED_COST,
     };
   };

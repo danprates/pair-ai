@@ -39,7 +39,9 @@ export const useCodeReview: UseAction =
     });
 
     log("Asking the model for a code review, this may take a while...");
+    const start = Date.now();
     const response = await ask(prompt);
+    const duration = Date.now() - start;
 
     const outputFile = "./tmp/code-review.md";
     await saveFile(outputFile, response.content);
@@ -51,6 +53,7 @@ export const useCodeReview: UseAction =
       file: outputFile,
       tokens: response.tokens,
       cost: response.cost,
+      duration,
       model: config.MODEL,
     });
   };
@@ -85,7 +88,9 @@ export const useExplain: UseAction =
     const prompt = replaceKeys(file, { content, language });
 
     log("Asking the model for an explanation, this may take a while...");
+    const start = Date.now();
     const response = await ask(prompt);
+    const duration = Date.now() - start;
 
     const outputFile = "./tmp/explain.md";
     await saveFile(outputFile, response.content);
@@ -97,6 +102,7 @@ export const useExplain: UseAction =
       file: outputFile,
       tokens: response.tokens,
       cost: response.cost,
+      duration,
       model: config.MODEL,
     });
   };
@@ -134,7 +140,9 @@ export const useCommit: UseAction =
     const prompt = replaceKeys(file, { content, language, recentCommits });
 
     log("Asking the model for a commit message, this may take a while...");
+    const start = Date.now();
     const response = await ask(prompt);
+    const duration = Date.now() - start;
 
     await commit(response.content);
 
@@ -144,6 +152,7 @@ export const useCommit: UseAction =
       message: `Commit created successfully with message: "${response.content}".`,
       tokens: response.tokens,
       cost: response.cost,
+      duration,
       model: config.MODEL,
     });
   };
@@ -177,7 +186,9 @@ export const usePullRequest: UseAction =
     log(
       "Asking the model for a pull request description, this may take a while...",
     );
+    const start = Date.now();
     const response = await ask(prompt);
+    const duration = Date.now() - start;
 
     const outputFile = "./tmp/pull-request.md";
     await saveFile(outputFile, response.content);
@@ -189,6 +200,7 @@ export const usePullRequest: UseAction =
       file: outputFile,
       tokens: response.tokens,
       cost: response.cost,
+      duration,
       model: config.MODEL,
     });
   };

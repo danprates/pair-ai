@@ -1,6 +1,6 @@
 import { $ } from "bun";
 import type { AskResult } from "../types";
-import { formatCost, NOT_INFORMED_COST } from "./cost";
+import { NOT_INFORMED_COST, usdToCents } from "./cost";
 
 type ClaudeCodeResponse = {
   result: string;
@@ -32,7 +32,7 @@ export const useClaudeCode =
         : null;
       const cost =
         data.total_cost_usd !== undefined
-          ? formatCost(data.total_cost_usd)
+          ? usdToCents(data.total_cost_usd)
           : NOT_INFORMED_COST;
       return { content: data.result.trim(), tokens, cost };
     } catch (error) {

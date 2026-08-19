@@ -10,7 +10,7 @@ export type UseAction = (
 export type AskResult = {
   content: string;
   tokens: number | null;
-  cost: string;
+  cost: number | "free" | "not informed";
 };
 
 export type Ask = (prompt: string) => Promise<AskResult>;
