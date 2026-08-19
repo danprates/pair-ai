@@ -1,4 +1,9 @@
-import { useCodeReview, useCommit, usePullRequest } from "./actions";
+import {
+  useCodeReview,
+  useCommit,
+  useExplain,
+  usePullRequest,
+} from "./actions";
 import { useConfig } from "./config";
 import { useDependencies } from "./dependencies";
 
@@ -17,6 +22,10 @@ const pair = async ([action, ...args]: string[]): Promise<void> => {
 
     case "pull-request":
       await usePullRequest(dependencies, config)(...args);
+      break;
+
+    case "explain":
+      await useExplain(dependencies, config)(...args);
       break;
 
     default:

@@ -12,7 +12,7 @@ export const useCodeReview: UseAction =
       saveFile,
       log,
     }: Dependencies,
-    config: Config
+    config: Config,
   ) =>
   async (...args: string[]) => {
     const { link, branch, lang, severity = "low" } = parseArgs(args);
@@ -44,6 +44,41 @@ export const useCodeReview: UseAction =
     log("Code review generated successfully!");
   };
 
+export const useExplain: UseAction =
+  (
+    {
+      getLogs,
+      getPullRequestDiff,
+      readFile,
+      replaceKeys,
+      ask,
+      saveFile,
+      log,
+    }: Dependencies,
+    config: Config,
+  ) =>
+  async (...args: string[]) => {
+    const { link, branch, lang } = parseArgs(args);
+
+    const isLink = link !== undefined;
+
+    log(isLink ? "Fetching pull request diff..." : "Fetching commit logs...");
+    const content = isLink
+      ? await getPullRequestDiff(link)
+      : await getLogs(branch);
+    const language = (isLink ? lang : config.LANGUAGE) || config.LANGUAGE;
+
+    const path = __dirname + "/prompts/explain.prompt.xml";
+    const file = await readFile(path);
+    const prompt = replaceKeys(file, { content, language });
+
+    log("Asking the model for an explanation, this may take a while...");
+    const response = await ask(prompt);
+
+    await saveFile("./tmp/explain.md", response);
+    log("Explanation generated successfully!");
+  };
+
 export const useCommit: UseAction =
   (
     {
@@ -55,7 +90,7 @@ export const useCommit: UseAction =
       replaceKeys,
       commit,
     }: Dependencies,
-    config: Config
+    config: Config,
   ) =>
   async (...args: string[]) => {
     const content = await getDiff();
@@ -81,7 +116,7 @@ export const useCommit: UseAction =
 export const usePullRequest: UseAction =
   (
     { getLogs, readFile, replaceKeys, ask, saveFile, log }: Dependencies,
-    config: Config
+    config: Config,
   ) =>
   async (...args: string[]) => {
     const { branch } = parseArgs(args);
@@ -92,12 +127,13 @@ export const usePullRequest: UseAction =
     const file = await readFile(path);
     const language = config.LANGUAGE;
     const templatePath =
-      config.PULL_REQUEST_TEMPLATE ||
-      __dirname + "/templates/pull-request.md";
+      config.PULL_REQUEST_TEMPLATE || __dirname + "/templates/pull-request.md";
     const template = await readFile(templatePath);
     const prompt = replaceKeys(file, { content, language, template });
 
-    log("Asking the model for a pull request description, this may take a while...");
+    log(
+      "Asking the model for a pull request description, this may take a while...",
+    );
     const response = await ask(prompt);
 
     await saveFile("./tmp/pull-request.md", response);

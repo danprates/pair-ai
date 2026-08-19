@@ -50,6 +50,8 @@ pair commit
 - `pair code-review --branch <branch>`: Analyzes the code in the specified branch and suggests improvements.
 - `pair code-review --link <url> [--lang <language>] [--severity <level>]`: Analyzes a pull request diff from a link.
 - `pair pull-request --branch <branch>`: Creates a pull request description based on the changes in the specified branch.
+- `pair explain --branch <branch>`: Explains, in plain language, what changed in the specified branch.
+- `pair explain --link <url> [--lang <language>]`: Explains, in plain language, what changed in a pull request diff.
 
 ## Scripts
 

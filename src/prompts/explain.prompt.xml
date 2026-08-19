@@ -1,0 +1,41 @@
+<prompt>
+  <purpose>Guide the reader through the diff provided as a clear narrative, explaining what changed and why, as if walking a teammate through the reasoning behind the change.</purpose>
+
+  <instructions>
+    <instruction>Always answer in {{ language }}</instruction>
+    <instruction>Return the content in markdown</instruction>
+    <instruction>Write as a narrative, in flowing paragraphs, not as a dry list of files touched</instruction>
+    <instruction>Do not evaluate the code or suggest improvements, only explain it</instruction>
+    <instruction>Start with the problem or motivation that likely triggered the change, inferred from the diff</instruction>
+    <instruction>Walk through the change step by step, in the order that makes it easiest to follow, explaining why each step was necessary, not just what it does</instruction>
+    <instruction>Connect the dots between files: explain how a change in one file relates to or is caused by a change in another</instruction>
+    <instruction>Call out any tradeoffs, edge cases, or risks the change introduces or addresses</instruction>
+    <instruction>Point out any behavior changes that would be relevant to a reviewer</instruction>
+    <instruction>End with a short takeaway of what this means for the codebase or the team going forward</instruction>
+    <instruction>Use the example-response as the output format</instruction>
+  </instructions>
+
+  <example-response>
+    ## The problem
+
+    Payment webhook events were being silently dropped whenever the downstream service had a brief network hiccup. Since there was no retry, a single failed request meant the event was gone for good.
+
+    ## Walking through the change
+
+    The fix starts in `src/webhooks/payment.ts`, where the event processing call is now wrapped in a retry with exponential backoff. This is the core of the fix: instead of giving up on the first failure, the handler now tries up to 3 times, waiting longer between each attempt, before finally logging an error.
+
+    That last part matters — the change also adds explicit error logging when all retries are exhausted, so a persistent failure is no longer silent either.
+
+    To back this up, `src/webhooks/payment.spec.ts` adds two new test cases: one confirming the retry actually happens on a transient failure, and one confirming the handler gives up cleanly (and logs) after the max attempts are reached.
+
+    ## Tradeoffs
+
+    Retrying means a slow downstream service can now hold a webhook handler open longer than before. That's an acceptable tradeoff here since payment events are low-volume, but it's worth watching if this pattern gets reused for high-throughput webhooks.
+
+    ## Takeaway
+
+    Webhook events are now resilient to transient failures, and failures that do stick are visible in the logs instead of disappearing.
+  </example-response>
+
+  <diff>{{ content }}</diff>
+</prompt>
