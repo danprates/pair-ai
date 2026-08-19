@@ -42,13 +42,16 @@ export const useCodeReview: UseAction =
     const response = await ask(prompt);
 
     const outputFile = "./tmp/code-review.md";
-    await saveFile(outputFile, response);
+    await saveFile(outputFile, response.content);
 
     printJson({
       ok: true,
       action: "code-review",
       message: `Code review generated successfully and saved to ${outputFile}.`,
       file: outputFile,
+      tokens: response.tokens,
+      cost: response.cost,
+      model: config.MODEL,
     });
   };
 
@@ -85,13 +88,16 @@ export const useExplain: UseAction =
     const response = await ask(prompt);
 
     const outputFile = "./tmp/explain.md";
-    await saveFile(outputFile, response);
+    await saveFile(outputFile, response.content);
 
     printJson({
       ok: true,
       action: "explain",
       message: `Explanation generated successfully and saved to ${outputFile}.`,
       file: outputFile,
+      tokens: response.tokens,
+      cost: response.cost,
+      model: config.MODEL,
     });
   };
 
@@ -128,14 +134,17 @@ export const useCommit: UseAction =
     const prompt = replaceKeys(file, { content, language, recentCommits });
 
     log("Asking the model for a commit message, this may take a while...");
-    const commitMessage = await ask(prompt);
+    const response = await ask(prompt);
 
-    await commit(commitMessage);
+    await commit(response.content);
 
     printJson({
       ok: true,
       action: "commit",
-      message: `Commit created successfully with message: "${commitMessage}".`,
+      message: `Commit created successfully with message: "${response.content}".`,
+      tokens: response.tokens,
+      cost: response.cost,
+      model: config.MODEL,
     });
   };
 
@@ -171,12 +180,15 @@ export const usePullRequest: UseAction =
     const response = await ask(prompt);
 
     const outputFile = "./tmp/pull-request.md";
-    await saveFile(outputFile, response);
+    await saveFile(outputFile, response.content);
 
     printJson({
       ok: true,
       action: "pull-request",
       message: `Pull request description generated successfully and saved to ${outputFile}.`,
       file: outputFile,
+      tokens: response.tokens,
+      cost: response.cost,
+      model: config.MODEL,
     });
   };

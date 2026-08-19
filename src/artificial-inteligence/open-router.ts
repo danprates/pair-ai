@@ -1,9 +1,16 @@
+import type { AskResult } from "../types";
+import { formatCost, NOT_INFORMED_COST } from "./cost";
+
 type OpenRouterResponse = {
   choices: {
     message: {
       content: string;
     };
   }[];
+  usage?: {
+    total_tokens: number;
+    cost?: number;
+  };
   error?: {
     message: string;
     code: number;
@@ -12,7 +19,7 @@ type OpenRouterResponse = {
 
 export const useOpenRouter =
   (apiKey: string, model: string) =>
-  async (prompt: string): Promise<string> => {
+  async (prompt: string): Promise<AskResult> => {
     const url = "https://openrouter.ai/api/v1/chat/completions";
     const response = await fetch(url, {
       method: "POST",
@@ -24,6 +31,7 @@ export const useOpenRouter =
         model: model,
         messages: [{ role: "user", content: [{ type: "text", text: prompt }] }],
         temperature: 0.1,
+        usage: { include: true },
       }),
     });
 
@@ -31,5 +39,12 @@ export const useOpenRouter =
     if (data.error) {
       throw new Error(`OpenRouter API returned ${data.error.message}`);
     }
-    return data.choices[0].message.content.replaceAll("```", "").trim();
+    return {
+      content: data.choices[0].message.content.replaceAll("```", "").trim(),
+      tokens: data.usage?.total_tokens ?? null,
+      cost:
+        data.usage?.cost !== undefined
+          ? formatCost(data.usage.cost)
+          : NOT_INFORMED_COST,
+    };
   };

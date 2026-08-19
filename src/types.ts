@@ -7,7 +7,13 @@ export type UseAction = (
   config: Config
 ) => (...args: string[]) => Promise<void>;
 
-export type Ask = (prompt: string) => Promise<string>;
+export type AskResult = {
+  content: string;
+  tokens: number | null;
+  cost: string;
+};
+
+export type Ask = (prompt: string) => Promise<AskResult>;
 
 export type Config = {
   MODEL: string;

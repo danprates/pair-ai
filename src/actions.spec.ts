@@ -1,6 +1,6 @@
 import { describe, expect, it, mock } from "bun:test";
 import { useCommit } from "./actions";
-import type { Config, UseDependencies } from "./types";
+import type { AskResult, Config, UseDependencies } from "./types";
 
 const config: Config = {
   MODEL: "claude/sonnet",
@@ -37,7 +37,9 @@ describe("CommitAction", () => {
       getPullRequestDiff: mock<(url: string) => Promise<string>>(() =>
         Promise.resolve(""),
       ),
-      ask: mock<(prompt: string) => Promise<string>>(() => Promise.resolve("")),
+      ask: mock<(prompt: string) => Promise<AskResult>>(() =>
+        Promise.resolve({ content: "", tokens: null, cost: "not informed" }),
+      ),
     });
     const dependencies = useDependencies(config);
     const commit = useCommit(dependencies, config);
