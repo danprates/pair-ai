@@ -15,11 +15,11 @@ type ClaudeCodeResponse = {
 };
 
 export const useClaudeCode =
-  (model: string) =>
+  (model: string, effort: string) =>
   async (prompt: string): Promise<AskResult> => {
     try {
       const { stdout } =
-        await $`claude -p ${prompt} --output-format json --tools "" --permission-mode bypassPermissions --model ${model} --system-prompt ${systemPrompt}`.quiet();
+        await $`claude -p ${prompt} --output-format json --tools "" --permission-mode bypassPermissions --model ${model} --effort ${effort} --system-prompt ${systemPrompt}`.quiet();
       const parsed: ClaudeCodeResponse | ClaudeCodeResponse[] = JSON.parse(
         stdout.toString(),
       );

@@ -21,7 +21,7 @@ export const useModel = (config: Config): Ask => {
     case "llamaserver":
       return useLlamaServer(model);
     case "claude":
-      return useClaudeCode(model);
+      return useClaudeCode(model, config.EFFORT);
     default:
       throw new Error(`Unknown model provider: ${provider}`);
   }

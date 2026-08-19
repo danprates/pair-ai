@@ -5,6 +5,7 @@ import { useDependencies } from "./dependencies";
 describe("File functions", () => {
   const { readFile, replaceKey } = useDependencies({
     MODEL: "claude/sonnet",
+    EFFORT: "medium",
     LANGUAGE: "en",
     COMMIT_LANGUAGE: "en",
     SOURCE_CONTROL: "github",

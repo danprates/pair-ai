@@ -2,6 +2,7 @@ import type { Config } from "./types";
 
 const defaultConfig: Config = {
   MODEL: "gemini/gemini-2.0-flash",
+  EFFORT: "medium",
   LANGUAGE: "en",
   COMMIT_LANGUAGE: "en",
   SOURCE_CONTROL: "github",

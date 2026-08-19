@@ -4,6 +4,7 @@ import type { AskResult, Config, UseDependencies } from "./types";
 
 const config: Config = {
   MODEL: "claude/sonnet",
+  EFFORT: "medium",
   LANGUAGE: "en",
   COMMIT_LANGUAGE: "en",
   SOURCE_CONTROL: "github",

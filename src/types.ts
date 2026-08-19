@@ -17,6 +17,7 @@ export type Ask = (prompt: string) => Promise<AskResult>;
 
 export type Config = {
   MODEL: string;
+  EFFORT: string;
   LANGUAGE: string;
   COMMIT_LANGUAGE: string;
   SOURCE_CONTROL: string;
