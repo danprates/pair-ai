@@ -36,7 +36,7 @@ const getDiff = async (): Promise<string> => {
 
 const commit = async (message: string): Promise<void> => {
   const sanitizedMessage = message.replaceAll("```", "").trim();
-  await $`git add . && git commit -m "${sanitizedMessage}"`;
+  await $`git add . && git commit -m "${sanitizedMessage}"`.quiet();
 };
 
 const getLogs = async (branch: string): Promise<string> => {
