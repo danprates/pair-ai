@@ -11,6 +11,7 @@ export const useCodeReview: UseAction =
       ask,
       saveFile,
       log,
+      printJson,
     }: Dependencies,
     config: Config,
   ) =>
@@ -40,8 +41,15 @@ export const useCodeReview: UseAction =
     log("Asking the model for a code review, this may take a while...");
     const response = await ask(prompt);
 
-    await saveFile("./tmp/code-review.md", response);
-    log("Code review generated successfully!");
+    const outputFile = "./tmp/code-review.md";
+    await saveFile(outputFile, response);
+
+    printJson({
+      ok: true,
+      action: "code-review",
+      message: `Code review generated successfully and saved to ${outputFile}.`,
+      file: outputFile,
+    });
   };
 
 export const useExplain: UseAction =
@@ -54,6 +62,7 @@ export const useExplain: UseAction =
       ask,
       saveFile,
       log,
+      printJson,
     }: Dependencies,
     config: Config,
   ) =>
@@ -75,8 +84,15 @@ export const useExplain: UseAction =
     log("Asking the model for an explanation, this may take a while...");
     const response = await ask(prompt);
 
-    await saveFile("./tmp/explain.md", response);
-    log("Explanation generated successfully!");
+    const outputFile = "./tmp/explain.md";
+    await saveFile(outputFile, response);
+
+    printJson({
+      ok: true,
+      action: "explain",
+      message: `Explanation generated successfully and saved to ${outputFile}.`,
+      file: outputFile,
+    });
   };
 
 export const useCommit: UseAction =
@@ -85,6 +101,7 @@ export const useCommit: UseAction =
       getDiff,
       getRecentCommits,
       log,
+      printJson,
       ask,
       readFile,
       replaceKeys,
@@ -96,7 +113,11 @@ export const useCommit: UseAction =
     const content = await getDiff();
 
     if (content.length === 0) {
-      log("There are no changes to commit.");
+      printJson({
+        ok: true,
+        action: "commit",
+        message: "There are no changes to commit.",
+      });
       return;
     }
 
@@ -107,15 +128,28 @@ export const useCommit: UseAction =
     const prompt = replaceKeys(file, { content, language, recentCommits });
 
     log("Asking the model for a commit message, this may take a while...");
-    const message = await ask(prompt);
+    const commitMessage = await ask(prompt);
 
-    await commit(message);
-    log("Commit created successfully!");
+    await commit(commitMessage);
+
+    printJson({
+      ok: true,
+      action: "commit",
+      message: `Commit created successfully with message: "${commitMessage}".`,
+    });
   };
 
 export const usePullRequest: UseAction =
   (
-    { getLogs, readFile, replaceKeys, ask, saveFile, log }: Dependencies,
+    {
+      getLogs,
+      readFile,
+      replaceKeys,
+      ask,
+      saveFile,
+      log,
+      printJson,
+    }: Dependencies,
     config: Config,
   ) =>
   async (...args: string[]) => {
@@ -136,6 +170,13 @@ export const usePullRequest: UseAction =
     );
     const response = await ask(prompt);
 
-    await saveFile("./tmp/pull-request.md", response);
-    log("Pull request generated successfully!");
+    const outputFile = "./tmp/pull-request.md";
+    await saveFile(outputFile, response);
+
+    printJson({
+      ok: true,
+      action: "pull-request",
+      message: `Pull request description generated successfully and saved to ${outputFile}.`,
+      file: outputFile,
+    });
   };

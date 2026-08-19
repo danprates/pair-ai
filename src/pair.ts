@@ -29,12 +29,19 @@ const pair = async ([action, ...args]: string[]): Promise<void> => {
       break;
 
     default:
-      dependencies.log("Unknown action");
+      dependencies.printJson({
+        ok: false,
+        action,
+        message: `Unknown action: "${action}".`,
+      });
       break;
   }
 };
 
-pair(process.argv.slice(2)).catch((error) => {
-  console.error(error.message);
+const argv = process.argv.slice(2);
+const action = argv[0];
+
+pair(argv).catch((error) => {
+  console.log(JSON.stringify({ ok: false, action, message: error.message }));
   process.exit(1);
 });

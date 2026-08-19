@@ -27,6 +27,7 @@ describe("CommitAction", () => {
         (content) => content,
       ),
       log: mock<(message: string) => void>(() => {}),
+      printJson: mock<(data: Record<string, unknown>) => void>(() => {}),
       getDiff: mock<() => Promise<string>>(() => Promise.resolve("")),
       commit: mock<(message: string) => Promise<void>>(() => Promise.resolve()),
       getLogs: mock<(branch: string) => Promise<string>>(() =>
@@ -41,9 +42,11 @@ describe("CommitAction", () => {
     const dependencies = useDependencies(config);
     const commit = useCommit(dependencies, config);
     expect(commit()).resolves.toBeUndefined();
-    expect(dependencies.log).toHaveBeenCalledWith(
-      "There are no changes to commit.",
-    );
+    expect(dependencies.printJson).toHaveBeenCalledWith({
+      ok: true,
+      action: "commit",
+      message: "There are no changes to commit.",
+    });
     expect(dependencies.getDiff).toHaveBeenCalled();
   });
 });

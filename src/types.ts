@@ -24,6 +24,7 @@ export type Dependencies = {
   replaceKey: (content: string, key: string, value: string) => string;
   replaceKeys: (content: string, keys: Record<string, string>) => string;
   log: (message: string) => void;
+  printJson: (data: Record<string, unknown>) => void;
   getDiff: () => Promise<string>;
   commit: (message: string) => Promise<void>;
   getLogs: (branch: string) => Promise<string>;

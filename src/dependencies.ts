@@ -23,7 +23,10 @@ const replaceKeys = (content: string, keys: Record<string, string>): string => {
   );
 };
 
-const log = (message: string): void => console.log(message);
+const log = (message: string): void => console.error(message);
+
+const printJson = (data: Record<string, unknown>): void =>
+  console.log(JSON.stringify(data));
 
 const getDiff = async (): Promise<string> => {
   const { stdout } =
@@ -57,6 +60,7 @@ export const useDependencies: UseDependencies = (config: Config) => ({
   replaceKey,
   replaceKeys,
   log,
+  printJson,
   getDiff,
   commit,
   getLogs,
