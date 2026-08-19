@@ -1,3 +1,4 @@
+import systemPrompt from "../prompts/system.prompt.txt" with { type: "text" };
 import type { AskResult } from "../types";
 import { FREE_COST } from "./cost";
 
@@ -26,7 +27,10 @@ export const useLlamaServer =
       },
       body: JSON.stringify({
         model: model,
-        messages: [{ role: "user", content: prompt }],
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: prompt },
+        ],
         temperature: 0.1,
       }),
     });

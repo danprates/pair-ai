@@ -1,3 +1,4 @@
+import systemPrompt from "../prompts/system.prompt.txt" with { type: "text" };
 import type { AskResult } from "../types";
 import { NOT_INFORMED_COST } from "./cost";
 
@@ -27,6 +28,7 @@ export const useGemini =
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        systemInstruction: { parts: [{ text: systemPrompt }] },
         contents: [
           {
             parts: [{ text: prompt }],

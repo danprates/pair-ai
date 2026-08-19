@@ -1,4 +1,5 @@
 import { $ } from "bun";
+import systemPrompt from "../prompts/system.prompt.txt" with { type: "text" };
 import type { AskResult } from "../types";
 import { NOT_INFORMED_COST, usdToCents } from "./cost";
 
@@ -18,7 +19,7 @@ export const useClaudeCode =
   async (prompt: string): Promise<AskResult> => {
     try {
       const { stdout } =
-        await $`claude -p ${prompt} --output-format json --tools "" --permission-mode bypassPermissions --model ${model}`.quiet();
+        await $`claude -p ${prompt} --output-format json --tools "" --permission-mode bypassPermissions --model ${model} --system-prompt ${systemPrompt}`.quiet();
       const parsed: ClaudeCodeResponse | ClaudeCodeResponse[] = JSON.parse(
         stdout.toString(),
       );

@@ -1,4 +1,9 @@
 import { parseArgs } from "./args";
+import codeReviewPrompt from "./prompts/code-review.prompt.xml" with { type: "text" };
+import commitPrompt from "./prompts/commit.prompt.xml" with { type: "text" };
+import explainPrompt from "./prompts/explain.prompt.xml" with { type: "text" };
+import pullRequestPrompt from "./prompts/pull-request.prompt.xml" with { type: "text" };
+import defaultPullRequestTemplate from "./templates/pull-request.md" with { type: "text" };
 import type { Config, Dependencies, UseAction } from "./types";
 
 export const useCodeReview: UseAction =
@@ -26,12 +31,10 @@ export const useCodeReview: UseAction =
       : await getLogs(branch);
     const language = (isLink ? lang : config.LANGUAGE) || config.LANGUAGE;
 
-    const path = __dirname + "/prompts/code-review.prompt.xml";
-    const file = await readFile(path);
     const customRules = config.CODE_REVIEW_RULES
       ? await readFile(config.CODE_REVIEW_RULES)
       : "";
-    const prompt = replaceKeys(file, {
+    const prompt = replaceKeys(codeReviewPrompt, {
       content,
       language,
       customRules,
@@ -63,7 +66,6 @@ export const useExplain: UseAction =
     {
       getLogs,
       getPullRequestDiff,
-      readFile,
       replaceKeys,
       ask,
       saveFile,
@@ -83,9 +85,7 @@ export const useExplain: UseAction =
       : await getLogs(branch);
     const language = (isLink ? lang : config.LANGUAGE) || config.LANGUAGE;
 
-    const path = __dirname + "/prompts/explain.prompt.xml";
-    const file = await readFile(path);
-    const prompt = replaceKeys(file, { content, language });
+    const prompt = replaceKeys(explainPrompt, { content, language });
 
     log("Asking the model for an explanation, this may take a while...");
     const start = Date.now();
@@ -115,7 +115,6 @@ export const useCommit: UseAction =
       log,
       printJson,
       ask,
-      readFile,
       replaceKeys,
       commit,
     }: Dependencies,
@@ -134,10 +133,12 @@ export const useCommit: UseAction =
     }
 
     const recentCommits = await getRecentCommits();
-    const path = __dirname + "/prompts/commit.prompt.xml";
-    const file = await readFile(path);
     const language = config.COMMIT_LANGUAGE;
-    const prompt = replaceKeys(file, { content, language, recentCommits });
+    const prompt = replaceKeys(commitPrompt, {
+      content,
+      language,
+      recentCommits,
+    });
 
     log("Asking the model for a commit message, this may take a while...");
     const start = Date.now();
@@ -175,13 +176,15 @@ export const usePullRequest: UseAction =
 
     log("Fetching commit logs...");
     const content = await getLogs(branch);
-    const path = __dirname + "/prompts/pull-request.prompt.xml";
-    const file = await readFile(path);
     const language = config.LANGUAGE;
-    const templatePath =
-      config.PULL_REQUEST_TEMPLATE || __dirname + "/templates/pull-request.md";
-    const template = await readFile(templatePath);
-    const prompt = replaceKeys(file, { content, language, template });
+    const template = config.PULL_REQUEST_TEMPLATE
+      ? await readFile(config.PULL_REQUEST_TEMPLATE)
+      : defaultPullRequestTemplate;
+    const prompt = replaceKeys(pullRequestPrompt, {
+      content,
+      language,
+      template,
+    });
 
     log(
       "Asking the model for a pull request description, this may take a while...",
